@@ -43,6 +43,7 @@
           <a href="#e04">E04 — Negotiated SRTP</a>
           <a href="#e05">E05 — Carrier record</a>
           <a href="#e06">E06 — Traffic follow-up</a>
+          <a href="#e07">E07 — Production deployment</a>
           <a href="#limits">Scope and references</a>
         </nav>
         <div class="aside-links"><a href="./">Case study ↗</a><a href="EVIDENCE.md">Markdown source ↗</a></div>
@@ -121,9 +122,15 @@ Callfile finished; no owned channel remains.</code></pre><figcaption>Original co
           <div class="mini-stats"><div><strong>9</strong><span>Completed</span></div><div><strong>6</strong><span>No answer</span></div><div><strong>4</strong><span>Failed</span></div><div><strong>19</strong><span>Total secure-marked</span></div></div>
           <p>Failed/unanswered attempts are not successful audio-session evidence. Local FastAGI connection refusals were also noted; they are an unresolved application/logging issue rather than proof of a TLS failure.</p>
         </section>
+        <section id="e07">
+          <p class="section-kicker">E07 / OCTOBER 13 PRODUCTION STATUS</p>
+          <h2>Secure trunk deployed for live outbound calling</h2>
+          <p>The environment owner has confirmed that the dedicated secure trunk was successfully deployed and rolled out, and that it is now used for production outbound calls. This is an <strong>operator-confirmed deployment milestone</strong>, distinct from the earlier captured pilot diagnostics and Twilio call export.</p>
+          <p>No sanitized cutover ticket, campaign routing inventory, complete post-deployment call population, or certificate renewal proof has been included in the publication package. Accordingly, the deployment is described as successful <em>for the new secure trunk</em>, without asserting that every campaign or voice leg has transitioned or that the environment has achieved a broader compliance certification.</p>
+        </section>
         <section id="limits">
           <p class="section-kicker">PUBLICATION BOUNDARY</p><h2>What this register does not establish</h2>
-          <p>The evidence confirms a <strong>defined outbound Asterisk-to-Twilio secure trunk path and an answered encrypted test call</strong>. It does not establish organization-wide encryption, inbound/agent/inter-server/PSTN protections, complete recording security, renewal/refresh lifecycle, call-capacity sufficiency, exhaustive failover or transfer testing, plaintext-offer rejection, or organizational compliance certification.</p>
+          <p>The original test data confirms <strong>a secure outbound Asterisk-to-Twilio trunk path and an answered encrypted call</strong>; the operator separately confirms that the same secure trunk is now used in production. Neither assertion establishes organization-wide encryption, full legacy-route retirement, protection of all inbound/agent/inter-server/PSTN legs, complete recording security, certificate-refresh reliability, sustained load capacity, comprehensive failover/transfer testing, plaintext-offer rejection, or organizational compliance certification.</p>
           <h3>Platform references</h3>
           <ul><li><a href="https://www.twilio.com/docs/sip-trunking">Twilio Elastic SIP Trunking</a></li><li><a href="https://www.twilio.com/docs/sip-trunking/troubleshooting">Twilio troubleshooting and call logs</a></li><li><a href="https://docs.asterisk.org/Latest_API/API_Documentation/Module_Configuration/res_pjsip/">Asterisk PJSIP configuration</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/res/res_pjsip/pjsip_resolver.c">Asterisk 18.26.4 resolver source</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/channels/pjsip/dialplan_functions.c">Asterisk 18.26.4 PJSIP channel functions</a></li></ul>
           <div class="publication-notice"><h3>Owner review required before publication</h3><p>Professional history, environmental details and sanitized excerpts should be checked against the employer's disclosure requirements. The public web page and repository source require review; redaction of only the visible page is insufficient.</p></div>
