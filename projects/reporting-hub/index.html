@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C0E11">
+  <meta name="description" content="Josh Escobar's ECA Reporting Hub case study: Python/SQL automation across 32 reporting workflows, evolving from scripts into a Linux-hosted application with validation and controlled updates.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="From Manual Reports to a Reporting Platform | Josh Escobar — greycarpet">
+  <meta property="og:description" content="Capturing business rules, automating deliverables, and operating a Dockerized reporting application without treating speed as proof of correctness.">
+  <meta property="og:url" content="https://greycarpet.github.io/projects/reporting-hub/">
+  <link rel="canonical" href="https://greycarpet.github.io/projects/reporting-hub/">
+  <title>ECA Reporting Hub — Python &amp; SQL Automation | Josh Escobar — greycarpet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="case-study.css">
+  <script src="../../script.js" defer></script>
+  <noscript><style>.menu-toggle{display:none!important}.site-nav{display:flex!important;position:static!important;flex-wrap:wrap}.nav-shell{flex-wrap:wrap}.site-header{height:auto}</style></noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to case study</a>
+  <header class="site-header"><div class="nav-shell">
+    <a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a>
+    <span class="brand-descriptor">/ engineering portfolio</span>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+    <nav class="site-nav" id="site-nav" aria-label="Main navigation"><a href="../../#work">Work</a><a href="../../#experience">Experience</a><a href="../../#about">About</a><a href="../../resume/">Resume</a><a class="nav-contact" href="../../#contact">Contact <span aria-hidden="true">↗</span></a></nav>
+  </div></header>
+  <main id="main">
+    <header class="study-hero wrap">
+      <a class="back-link" href="../../#work">← All selected work</a>
+      <p class="eyebrow">02 / AUTOMATION + PLATFORM ENGINEERING</p>
+      <h1>From manual reports.<br><span>To a reporting platform.</span></h1>
+      <p class="deck">Building ECA Reporting Hub: turning undocumented reporting rules into Python/SQL workflows, then into a Linux-hosted application that operations could use.</p>
+      <div class="byline"><span>Josh Escobar</span><span>Linux Automation &amp; Platform Engineering</span><span>Written October 2026</span></div>
+      <div class="tags" aria-label="Technologies"><span>Python</span><span>SQL</span><span>Linux</span><span>Docker Compose</span><span>Django</span><span>Celery</span><span>PostgreSQL</span></div>
+      <p class="status"><strong>Implemented and evolving.</strong> The work progressed from scripts to a desktop hub and a hosted application. Workflow adoption and validation remained project-specific.</p>
+    </header>
+    <section class="metrics-band" aria-label="Reported project impact"><div class="wrap metrics">
+      <div><strong>32 workflows</strong><span>Historical automation scope</span></div>
+      <div><strong>&lt;30 minutes</strong><span>Reported cycle, down from about 8 hours</span></div>
+      <div><strong>~20 hrs/week</strong><span>Estimated staff time saved</span></div>
+      <div><strong>5 services</strong><span>Documented hosted application stack</span></div>
+    </div></section>
+    <div class="wrap article-layout">
+      <aside class="contents" aria-label="Case study contents">
+        <p class="eyebrow">IN THIS CASE STUDY</p>
+        <nav aria-label="Article navigation"><a href="#problem">01 / Understand the work</a><a href="#rules">02 / Make the rules explicit</a><a href="#evolution">03 / Scripts become a product</a><a href="#platform">04 / Operate the platform</a><a href="#validation">05 / Prove the changes</a><a href="#impact">06 / Measure the outcome</a><a href="#ownership">07 / Ownership and lessons</a><a href="#sources">Sources and scope</a></nav>
+        <p class="sidebar-note">ECA Reporting Hub<br>A production reporting initiative, not a template dashboard.</p>
+      </aside>
+      <article class="article">
+        <p class="standfirst">The real task was not exporting data. It was making the reporting rules explicit.</p>
+        <p>At ECA Direct, recurring client reports involved more than running a query. Someone had to obtain the right inputs, apply project-specific rules, reconcile the result, and put it into the required format. Important decisions lived inside the manual workflow rather than in one clear specification.</p>
+        <p>I mapped those decisions and used Python and SQL to make the process repeatable. The work grew across 32 reporting workflows, developed into ECA Reporting Hub, and later moved into a Dockerized application on Linux. The result was faster reporting, but the more durable improvement was a process that could be inspected, corrected, and used repeatedly. <a class="source-link" href="#s1">[S1]</a></p>
+
+        <section id="problem">
+          <p class="eyebrow">01 / THE OPERATING PROBLEM</p>
+          <h2>Reports depended on people reconstructing the process.</h2>
+          <p>The starting environment combined Access, SQL, Python, source-system data, and client files. VICIdial supplied calling activity; LimeSurvey supplied survey responses. Producing a usable deliverable meant relating those sources, interpreting their fields, and following the rules for the specific project. <a class="source-link" href="#s1">[S1]</a></p>
+          <p>Two reports could look similar while requiring different record selections, response mappings, or calculations. Automating only the file export would have left the difficult part untouched. I needed to understand which records belonged in a result, why a record was excluded, and how the final figures were calculated.</p>
+          <p>I started with the existing reporting work rather than designing a generic dashboard first. I documented the inputs and decisions, converted repeatable steps into code, and compared the generated deliverables with known or manually prepared outputs. That comparison helped separate a coding error from an incomplete understanding of the business rule.</p>
+          <div class="comparison" aria-label="Before and after reporting workflow">
+            <div><span class="small-label">BEFORE</span><h3>Repeat the procedure</h3><p>Gather inputs, reconstruct selection rules, transform records, check figures, and format each deliverable.</p></div>
+            <div><span class="small-label">AFTER</span><h3>Run a defined workflow</h3><p>Apply documented project logic, inspect validation results, and generate a consistent output for review.</p></div>
+          </div>
+        </section>
+
+        <section id="rules">
+          <p class="eyebrow">02 / BUSINESS LOGIC AS ENGINEERING</p>
+          <h2>One pipeline does not mean one rule for every project.</h2>
+          <p>The automation combined extraction, joins, filtering, deduplication, response translation, calculations, formatting, and validation. SQL handled relational selection and transformations; Python coordinated processing and output generation. I kept the project's meaning central: reusing a processing pattern was useful, but silently imposing the same reporting rules on different clients was not. <a class="source-link" href="#s1">[S1]</a></p>
+          <figure class="process-figure">
+            <ol class="process reporting-process"><li><span>01 / INPUTS</span><strong>Collect</strong><small>Calling, surveys, client files</small></li><li><span>02 / RULES</span><strong>Transform</strong><small>Join, select, translate</small></li><li><span>03 / CHECKS</span><strong>Validate</strong><small>Counts, values, exclusions</small></li><li><span>04 / OUTPUT</span><strong>Deliver</strong><small>Formatted files for review</small></li></ol>
+            <figcaption>Conceptual workflow summary, not an application screenshot. It describes the reporting stages, not a claim that every project uses an identical implementation or publishes automatically.</figcaption>
+          </figure>
+          <p>For example, a call attempt and a new reportable outcome are not the same thing. In one monthly reporting workflow, an unchanged finalized response could reappear after a later callback. The correct behavior was to suppress that repeated return while retaining response changes and preserving call totals. A blanket “remove duplicate people” rule would not express those requirements. <a class="source-link" href="#s3">[S3]</a></p>
+          <div class="table-scroll" role="region" aria-label="Examples of reporting decisions" tabindex="0"><table><thead><tr><th>Decision</th><th>Engineering question</th><th>Why it matters</th></tr></thead><tbody>
+            <tr><td>Record selection</td><td>Which project, period, and population does this output describe?</td><td>Correct data from the wrong scope is still an incorrect report.</td></tr>
+            <tr><td>Repeated outcomes</td><td>Is this a new response, a changed response, or an unchanged repeat?</td><td>A new call does not necessarily justify another client return.</td></tr>
+            <tr><td>Calculations</td><td>Do the time basis and numerator represent the same activity?</td><td>A plausible rate can still be based on the wrong denominator.</td></tr>
+            <tr><td>Output contract</td><td>Are the fields, mappings, layout, and totals what the recipient expects?</td><td>A generated file must preserve meaning, not merely open successfully.</td></tr>
+          </tbody></table></div>
+          <p>These questions made the work maintainable. When a discrepancy appeared, there was a specific rule or transformation to investigate instead of an opaque sequence of manual edits.</p>
+        </section>
+
+        <section id="evolution">
+          <p class="eyebrow">03 / FROM SCRIPTS TO AN APPLICATION</p>
+          <h2>Make the automation usable beyond the person who wrote it.</h2>
+          <p>Individual scripts were a useful first step, but they were not the end product. As the number of workflows grew, I brought the reporting tools together in ECA Reporting Hub. The desktop application provided a common place to run project reports rather than treating each script as a separate administrative task. <a class="source-link" href="#s1">[S1]</a></p>
+          <p>The next stage was a hosted application. That required rethinking how reporting data was sourced and stored, not simply placing the desktop executable in a container. The documented design used controlled, read-only ingestion from the calling and survey systems into a dedicated reporting datastore, with reusable project workflows and scheduled synchronization. <a class="source-link" href="#s1">[S1]</a></p>
+          <div class="evolution" aria-label="Reporting Hub development stages">
+            <div><span class="small-label">STAGE 01</span><h3>Scripts</h3><p>Capture the reporting logic in Python and SQL.</p></div>
+            <div><span class="small-label">STAGE 02</span><h3>Desktop hub</h3><p>Bring project tools into a common application workflow.</p></div>
+            <div><span class="small-label">STAGE 03</span><h3>Hosted platform</h3><p>Centralize execution, data services, and operational updates on Linux.</p></div>
+          </div>
+          <p>This was an evolution of working tools, not a claim that all 32 workflows reached the same web-production state at once. Each project's business rules and acceptance checks still mattered. A successful platform deployment did not automatically authorize every generated file for client delivery.</p>
+        </section>
+
+        <section id="platform">
+          <p class="eyebrow">04 / LINUX PLATFORM OPERATIONS</p>
+          <h2>The application needed an operating model, not just an image.</h2>
+          <p>The hosted stack used five Docker Compose services: a Django web application served by Gunicorn, a Celery worker, Celery Beat, PostgreSQL, and Redis. The application services shared an image but ran different commands. The documented deployment kept database state and working files outside the replaceable application containers through named volumes and bind mounts. <a class="source-link" href="#s2">[S2]</a></p>
+          <figure class="platform-figure">
+            <div class="panel-heading"><span>HOSTED APPLICATION</span><span>LOGICAL SERVICE ROLES</span></div>
+            <div class="service-grid"><div><span>WEB</span><strong>Django + Gunicorn</strong><p>Application interface</p></div><div><span>WORKER</span><strong>Celery</strong><p>Background tasks</p></div><div><span>SCHEDULER</span><strong>Celery Beat</strong><p>Scheduled task submission</p></div><div><span>DATABASE</span><strong>PostgreSQL</strong><p>Application data</p></div><div><span>BROKER / RESULTS</span><strong>Redis</strong><p>Task infrastructure</p></div></div>
+            <figcaption>Architectural summary of the documented stack. This is not a live topology, dashboard, or proof that every workflow ran asynchronously. Celery Beat schedules work; workers execute it. <a href="#s2">[S2]</a> <a href="#r1">[R1]</a></figcaption>
+          </figure>
+          <p>I treated updates as controlled changes to an operating service. In the October 6 deployment records, the previous source and application image were preserved, a candidate image was built and checked, application services were recreated, and readiness and report behavior were checked again. PostgreSQL and Redis remained running during that particular update. <a class="source-link" href="#s2">[S2]</a> <a class="source-link" href="#s3">[S3]</a></p>
+          <p>The distinctions mattered. A running container was not enough to accept a reporting change. Preserved volumes made data independent of a container's lifecycle, but they were not a completed backup-restore test. Docker provided packaging and service separation; it did not, by itself, produce the earlier reporting speedup. <a class="source-link" href="#r2">[R2]</a></p>
+        </section>
+
+        <section id="validation">
+          <p class="eyebrow">05 / VALIDATION IN PRODUCTION MAINTENANCE</p>
+          <h2>Prove the change—and check what should not change.</h2>
+          <p>Automation did not eliminate the need to investigate bad results. It gave me a better way to make the expected behavior explicit and test a correction. Two October 6 changes show the difference between accepting an application that starts and accepting a report that remains correct.</p>
+          <h3>Repairing a time calculation without changing unrelated results.</h3>
+          <p>An agent-hours repair addressed staffed-time calculation and completeness of campaign activity mirroring. The candidate was checked against the baseline within a shared repeatable-read database snapshot. That comparison limited the risk of confusing a real calculation change with source data changing between tests. PostgreSQL repeatable-read transactions provide a stable snapshot for successive reads within the transaction. <a class="source-link" href="#s4">[S4]</a> <a class="source-link" href="#r3">[R3]</a></p>
+          <figure class="code-panel evidence-panel">
+            <div class="panel-heading"><span>OCTOBER 6 / HOURS REPAIR</span><span>SELECTED ORIGINAL LOG LINES</span></div>
+            <pre tabindex="0" aria-label="Selected validation output from the deployed hours repair"><code>PASS baseline captured inside shared repeatable-read database snapshot
+PASS filter=combined | counts/list totals preserved | source time parity | Excel parity
+PASS filter=main | counts/list totals preserved | source time parity | Excel parity
+PASS filter=target | counts/list totals preserved | source time parity | Excel parity
+PASS mirror refresh committed only after all parity checks
+PASS readyz=200</code></pre>
+            <figcaption>Genuine selected log lines, in original order with intervening output omitted. Employee records and internal paths are excluded. These are recorded checks from one repair, not an exhaustive proof of every report. <a href="#s4">[S4]</a></figcaption>
+          </figure>
+          <p>The repair record reports preserved count/list totals, source-time agreement, and Excel parity for the checked filters. It also states that the source databases and client report files were not modified. That gave the result more meaning than simply observing a successful image build.</p>
+          <h3>Suppressing an unchanged return without suppressing new information.</h3>
+          <p>A second repair changed the monthly rule for previously reported, unchanged finalized responses. I validated it through preflight, candidate-image, and live stages. The deployed check suppressed an unchanged repeat while reporting preservation of response-change behavior and existing official files. Call totals and retained output cells were checked separately. <a class="source-link" href="#s3">[S3]</a></p>
+          <figure class="code-panel evidence-panel">
+            <div class="panel-heading"><span>RETURN-RULE REPAIR</span><span>SELECTED FIELDS / LIVE VALIDATION</span></div>
+            <pre tabindex="0" aria-label="Selected live validation fields from the return-rule repair"><code>{
+  "validation_stage": "live",
+  "status": "PASS",
+  "all_official_files_and_publications_preserved": true,
+  "response_changes_preserved": true,
+  "total_unchanged_repeats_suppressed_in_rebuilds": 1,
+  "database_read_only": true
+}</code></pre>
+            <figcaption>One original validation summary, reformatted for readability. No client or participant identifiers are included. The result describes the checked rebuilds; it is not a universal rule to remove every repeated record. <a href="#s3">[S3]</a></figcaption>
+          </figure>
+          <p>The broader lesson was to test both sides of a correction: what must change and what must remain the same. In reporting, an apparently successful fix can be wrong if it also changes a total, removes a legitimate response, or rewrites a previously published file.</p>
+        </section>
+
+        <section id="impact">
+          <p class="eyebrow">06 / MEASURED AND REPORTED OUTCOMES</p>
+          <h2>Give the time back.<br>Keep the measurements honest.</h2>
+          <p>The historical reporting account described 32 workflows and a combined cycle that fell from roughly eight hours to less than 30 minutes. Separately, individual automated deliverables that had taken 15 minutes to two hours were reported completing in under five seconds. Those are different measurements: a combined reporting cycle is not the same as one report's execution time. <a class="source-link" href="#s5">[S5]</a></p>
+          <div class="table-scroll" role="region" aria-label="Scope of reporting outcome measurements" tabindex="0"><table><thead><tr><th>Outcome</th><th>Reported result</th><th>Scope</th></tr></thead><tbody>
+            <tr><td>Automation coverage</td><td>32 workflows/projects</td><td>Historical scope across the reporting initiative, not a count of simultaneously live web workflows</td></tr>
+            <tr><td>Combined reporting cycle</td><td>About 8 hours → under 30 minutes</td><td>Earlier aggregate process comparison</td></tr>
+            <tr><td>Selected deliverables</td><td>15 minutes–2 hours → under 5 seconds</td><td>Per-project generation described in the operator account; not an application-wide response-time guarantee</td></tr>
+            <tr><td>Staff time</td><td>About 20 hours/week saved</td><td>Operational estimate recorded in career materials</td></tr>
+            <tr><td>Reporting errors</td><td>Approximately 90% fewer</td><td>Reported estimate, not an independently remeasured audit or a claim of zero defects</td></tr>
+          </tbody></table></div>
+          <p>The practical benefit was less time reconstructing and executing routine reporting steps, with more time available for exceptions, oversight, and other engineering work. The platform also made it easier to discuss the source of a number: an input, selection rule, calculation, and output could be investigated as separate parts of the process.</p>
+          <p>I keep the speed claims attached to their original scope. They do not promise that every sync, dashboard, export, or future client workflow finishes in seconds, and they should not be attributed to containerization alone.</p>
+        </section>
+
+        <section id="ownership">
+          <p class="eyebrow">07 / OWNERSHIP AND LESSONS</p>
+          <h2>The engineering responsibility stayed with me.</h2>
+          <p>I used AI assistance extensively during development. My ownership was in understanding the operating problem, supplying the workflow context, specifying the business rules, reviewing proposed changes, executing deployments, and validating the resulting behavior. I do not present the project as unaided manual authorship of every line of code. <a class="source-link" href="#s1">[S1]</a></p>
+          <p>That made verification more important, not less. A convincing implementation still had to match the approved reporting behavior. A comparison against known outputs, a same-snapshot check, or a regression test that preserved unrelated totals carried more weight than an explanation that merely sounded correct.</p>
+          <blockquote>A fast report is useful only when the meaning survives the automation.</blockquote>
+          <p>ECA Reporting Hub demonstrates the connection between software and infrastructure work: discover the rules, build usable automation, separate application services from persistent data, and validate changes in the environment where people depend on the result. It is an implemented platform that continued to evolve—not a finished claim that every workflow, restore scenario, and publication path had been exhaustively tested.</p>
+        </section>
+
+        <section id="sources" class="source-section">
+          <p class="eyebrow">SOURCES / EVIDENCE BOUNDARIES</p>
+          <h2>What supports this account.</h2>
+          <p>The narrative combines my recorded operator account, career/project documentation, and two original October 6 deployment result files. The evidence panels preserve selected log content; the workflow and service panels are explanatory layouts. No customer dashboard, synthetic performance test, or recreated terminal session is presented as production evidence.</p>
+          <details open><summary>Project sources and measurement notes</summary><dl class="source-list">
+            <div id="s1"><dt>S1 / Workflow and product history</dt><dd>September career materials and the October 8 professional-experience reference, project E09. Supports the manual business-rule discovery, Python/SQL processing, 32-workflow history, desktop-to-hosted evolution, output comparison, read-only reporting ingestion design, and AI-assisted development with operator ownership.</dd></div>
+            <div id="s2"><dt>S2 / Hosted application and updates</dt><dd>October 8 professional-experience reference, E10, and the Docker operations reference. Describes the five-service stack, shared application image, persistent data arrangement, and the October 6 controlled update. It is dated documentation, not a new infrastructure inspection.</dd></div>
+            <div id="s3"><dt>S3 / Original return-rule deployment output</dt><dd>October 6 response-change repair result file. Records preflight, candidate-image and live validations, preservation checks, one unchanged repeat suppressed in checked rebuilds, readiness, and successful deployment. The public excerpt excludes participant identifiers, client labels and internal paths.</dd></div>
+            <div id="s4"><dt>S4 / Original agent-hours repair output</dt><dd>October 6 same-snapshot repair result file. Records the baseline snapshot, count/list-total and Excel parity checks, conditional commit of the reporting mirror refresh, application recreation, and readiness. The selected lines are original output, not a newly run test.</dd></div>
+            <div id="s5"><dt>S5 / Metrics register</dt><dd>October 8 professional-experience reference, M04–M06. Separates per-deliverable execution, the historical combined reporting cycle, and estimates of weekly staff time and error reduction. This case study does not supply a new benchmark or an independent labor/error audit.</dd></div>
+          </dl></details>
+          <details open><summary>Official technical references</summary><dl class="source-list">
+            <div id="r1"><dt>R1 / Celery scheduling</dt><dd><a href="https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html">Celery: periodic tasks</a>. Distinguishes the Beat scheduler from the workers that execute tasks.</dd></div>
+            <div id="r2"><dt>R2 / Container data lifecycle</dt><dd><a href="https://docs.docker.com/engine/storage/volumes/">Docker: volumes</a>. Explains data persistence outside container writable layers; persistence is not evidence of a tested restore procedure.</dd></div>
+            <div id="r3"><dt>R3 / Database snapshots</dt><dd><a href="https://www.postgresql.org/docs/16/transaction-iso.html">PostgreSQL 16: transaction isolation</a>. Explains the repeatable-read behavior relevant to the recorded comparison. Technical references checked October 13, 2026; they explain mechanisms, not deployment history.</dd></div>
+          </dl></details>
+          <p class="publication-note">Raw input data, employee and customer records, credentials, production addresses, internal application code, and confidential reporting specifications are withheld. This retrospective does not certify compliance, universal report accuracy, zero downtime, full automatic publication, or a completed disaster-recovery program.</p>
+        </section>
+        <div class="article-end"><div><span class="eyebrow">MORE / LINUX ENGINEERING</span><h2>Standardize the endpoints.<br>Secure the voice connection.</h2></div><div class="next-links"><a class="button" href="../ansible-linux-deployment/">Ansible deployment <span aria-hidden="true">↗</span></a><a class="secondary-link" href="../secure-voice-trunk/">Twilio TLS/SRTP case study ↗</a></div></div>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../">greycarpet</a><span>Josh Escobar · Linux infrastructure &amp; network engineering</span><div><a href="../../resume/">Resume</a><a href="https://github.com/greycarpet">GitHub</a><span>© <span id="year">2026</span></span></div></div></footer>
+</body>
+</html>
