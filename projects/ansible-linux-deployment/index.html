@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C0E11">
+  <meta name="description" content="How Josh Escobar standardized 50 aging workstations with Lubuntu and Ansible: a documented baseline, clean-install validation, domain integration, and production rollout.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Standardizing 50 Linux Workstations with Ansible — greycarpet">
+  <meta property="og:description" content="A production endpoint migration: preserve usable hardware, define the configuration, automate the setup, and test beyond package installation.">
+  <meta property="og:url" content="https://greycarpet.github.io/projects/ansible-linux-deployment/">
+  <link rel="canonical" href="https://greycarpet.github.io/projects/ansible-linux-deployment/">
+  <title>Standardizing 50 Linux Workstations with Ansible | Josh Escobar — greycarpet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="case-study.css">
+  <script src="../../script.js" defer></script>
+  <noscript><style>.menu-toggle{display:none!important}.site-nav{display:flex!important;position:static!important;flex-wrap:wrap}.nav-shell{flex-wrap:wrap}.site-header{height:auto}</style></noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to case study</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a>
+      <span class="brand-descriptor">/ engineering portfolio</span>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="../../#work">Work</a><a href="../../#experience">Experience</a><a href="../../#about">About</a><a href="../../resume/">Resume</a><a class="nav-contact" href="../../#contact">Contact <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <header class="study-hero wrap">
+      <a class="back-link" href="../../#work">← All selected work</a>
+      <p class="eyebrow">03 / LINUX INFRASTRUCTURE + AUTOMATION</p>
+      <h1>50 workstations.<br><span>One defined baseline.</span></h1>
+      <p class="deck">How I gave aging hardware a useful second life with Lubuntu—and turned a working desktop configuration into an Ansible-managed deployment process.</p>
+      <div class="byline"><span>Josh Escobar</span><span>Linux Infrastructure &amp; Automation</span><span>Written October 2026</span></div>
+      <div class="tags" aria-label="Technologies"><span>Lubuntu</span><span>Ansible</span><span>YAML</span><span>SSH</span><span>Zoiper</span><span>Domain integration</span></div>
+      <p class="status"><strong>Production implementation.</strong> Fresh operating-system installs followed by automated workstation configuration—not a claim of zero-touch OS deployment.</p>
+    </header>
+    <section class="metrics-band" aria-label="Project outcomes">
+      <div class="wrap metrics">
+        <div><strong>50</strong><span>Workstations standardized</span></div>
+        <div><strong>One baseline</strong><span>Defined and documented</span></div>
+        <div><strong>Clean install</strong><span>Rebuild validation performed</span></div>
+        <div><strong>Hardware reused</strong><span>Immediate fleet replacement avoided</span></div>
+      </div>
+    </section>
+    <div class="wrap article-layout">
+      <aside class="contents" aria-label="Case study contents">
+        <p class="eyebrow">IN THIS CASE STUDY</p>
+        <nav aria-label="Article navigation">
+          <a href="#challenge">01 / The problem</a><a href="#baseline">02 / Define the baseline</a><a href="#automation">03 / Automate the setup</a><a href="#identity">04 / Preserve access</a><a href="#validation">05 / Test from a clean install</a><a href="#rollout">06 / Roll out and recover</a><a href="#outcome">07 / Results and lessons</a><a href="#sources">Sources and scope</a>
+        </nav>
+        <p class="sidebar-note">Project context: AnsibleKing, the workstation standardization initiative.</p>
+      </aside>
+      <article class="article">
+        <p class="standfirst">The goal was not simply to install Linux. It was to make the next workstation predictable.</p>
+        <p>At ECA Direct, aging Windows workstations were struggling with ordinary agent work. Replacing the fleet was one possible answer, but I first investigated whether a lighter operating system could make the existing machines useful again. The resulting project standardized 50 workstations on Lubuntu, then used Ansible to apply the configuration needed for daily operations. <a class="source-link" href="#s1">[S1]</a></p>
+        <p>I owned the research, baseline definition, playbook development, testing, documentation, and rollout. The useful outcome was not just a different desktop: it was a defined setup that could be applied to a fresh installation instead of recreated from memory.</p>
+
+        <section id="challenge">
+          <p class="eyebrow">01 / THE PROBLEM</p>
+          <h2>Keep the hardware.<br>Change how it is managed.</h2>
+          <p>The business needed usable agent endpoints: a browser, a softphone, employee access, and the settings that made those tools practical. The existing machines were a poor fit for the demands of their Windows environment, but that did not automatically make the hardware unusable.</p>
+          <p>I selected Lubuntu as the lighter platform for this workload. That solved only part of the problem. Installing a new operating system on 50 computers still leaves 50 opportunities to miss a package, apply a setting differently, or discover an access problem when someone needs to work.</p>
+          <p>I treated the work as two related changes: <strong>refresh the operating system, then standardize the configuration.</strong> All 50 machines received fresh Lubuntu installations. Ansible ran afterward; it did not perform the original bare-metal OS installation. Keeping that boundary clear matters when describing what the automation actually accomplished. <a class="source-link" href="#s1">[S1]</a></p>
+          <div class="comparison" aria-label="Before and after comparison">
+            <div><span class="small-label">BEFORE</span><h3>Aging Windows endpoints</h3><p>Hardware struggled with everyday work; repeated setup depended on reproducing individual configuration steps.</p></div>
+            <div><span class="small-label">AFTER</span><h3>A standard Linux workstation</h3><p>Fresh Lubuntu, a documented configuration, reusable playbooks, and checks for required components and access.</p></div>
+          </div>
+        </section>
+
+        <section id="baseline">
+          <p class="eyebrow">02 / BASELINE DESIGN</p>
+          <h2>Make one workstation understandable before making fifty alike.</h2>
+          <p>I started by creating and documenting a reference workstation. Its purpose was to establish what a usable agent desktop needed, not to produce a disk image to clone indiscriminately. I identified the required software, domain integration, browser and session settings, and the separation between an ordinary employee account and local administrative access.</p>
+          <p>That baseline became the specification for the playbooks. Instead of treating “looks like the working computer” as the acceptance criterion, I could point to the components and settings that made up the intended state. The same reference also gave troubleshooting a starting point when an endpoint behaved differently. <a class="source-link" href="#s1">[S1]</a></p>
+          <div class="table-scroll" role="region" aria-label="Workstation baseline responsibilities" tabindex="0">
+            <table><thead><tr><th>Area</th><th>What the baseline addressed</th><th>Important distinction</th></tr></thead><tbody>
+              <tr><td>Operating system</td><td>A consistent fresh Lubuntu installation</td><td>Installed before Ansible ran</td></tr>
+              <tr><td>Application setup</td><td>Required packages, Zoiper, browser and operational settings</td><td>Installed software alone does not prove a working user workflow</td></tr>
+              <tr><td>Identity</td><td>Domain components and employee login behavior</td><td>Check actual logins, not only package presence</td></tr>
+              <tr><td>Administration</td><td>A designated local administrator and restricted root login</td><td>Retain a tested way to administer the workstation</td></tr>
+              <tr><td>Verification</td><td>Configuration/component checks and selected account tests</td><td>Record what each check does—and does not—establish</td></tr>
+            </tbody></table>
+          </div>
+        </section>
+
+        <section id="automation">
+          <p class="eyebrow">03 / CONFIGURATION AS CODE</p>
+          <h2>Turn the setup procedure into something executable.</h2>
+          <p>I used Ansible playbooks to express the repeatable setup, including APT-based package installation and the supporting configuration. The administration workflow used Windows/WSL, SSH, YAML, an inventory, and Git-managed project files. A later infrastructure handover corroborates that controller and inventory arrangement; it is supporting context, not a transcript of the original 50-machine run. <a class="source-link" href="#s1">[S1]</a> <a class="source-link" href="#s3">[S3]</a></p>
+          <p>Ansible fit a task in which the same configuration needed to reach multiple Linux hosts. Its playbooks can target defined hosts and groups and organize configuration steps in order. Using the <code>apt</code> module let package tasks describe the desired installed state rather than depend entirely on a sequence of interactive commands. <a class="source-link" href="#r1">[R1]</a> <a class="source-link" href="#r2">[R2]</a></p>
+          <figure class="process-figure">
+            <ol class="process"><li><span>01</span><strong>Install Lubuntu</strong><small>Separate OS setup</small></li><li><span>02</span><strong>Apply playbooks</strong><small>Configuration automation</small></li><li><span>03</span><strong>Check the result</strong><small>Components and access</small></li></ol>
+            <figcaption>Workflow summary, not a deployment log. Ansible owns the configuration stage; the original fresh installations remain a distinct step.</figcaption>
+          </figure>
+          <figure class="code-panel">
+            <div class="panel-heading"><span>ILLUSTRATIVE TASK</span><span>NOT ORIGINAL PRODUCTION CODE</span></div>
+            <pre tabindex="0" aria-label="Illustrative Ansible package installation task"><code>- name: Ensure approved workstation packages are installed
+  ansible.builtin.apt:
+    name: "{{ workstation_packages }}"
+    state: present</code></pre>
+            <figcaption>This teaching example illustrates the module used in the project. The package variable is intentionally undefined here. It is not an extracted playbook, a complete deployment recipe, or evidence of a new execution. <a href="#r2">[R2]</a></figcaption>
+          </figure>
+          <p>The engineering value came from moving configuration out of an administrator's memory and into an explicit, reviewable process. It also made the work easier to explain: which machines were targeted, which step was responsible for a change, and which part needed attention when a host did not finish as expected.</p>
+        </section>
+
+        <section id="identity">
+          <p class="eyebrow">04 / IDENTITY AND RECOVERY ACCESS</p>
+          <h2>A configured desktop still needs a usable login.</h2>
+          <p>The workstation design included domain access for ordinary employees and a designated local account for administration and recovery. I installed domain-related components including realmd, SSSD, and Winbind and configured short-name login so a user could sign in without typing a fully qualified account name. <a class="source-link" href="#s2">[S2]</a></p>
+          <p>That list describes the components in this deployment, not a universal requirement to run every identity component together. The retained account does not establish the exact active authentication-provider path, so I do not present a speculative PAM or SSSD configuration as the original implementation.</p>
+          <p>I tested several domain accounts and the designated local administrator. I created the local administrative account before restricting root login, then confirmed a root login attempt failed. Those checks established specific behavior: employee access worked for the tested accounts, the local administrative path worked, and the tested root login was rejected. They were not a complete authentication audit. <a class="source-link" href="#s2">[S2]</a></p>
+          <blockquote>Package presence tells me a component exists. A successful login tells me something about whether the person can actually use the workstation.</blockquote>
+        </section>
+
+        <section id="validation">
+          <p class="eyebrow">05 / VALIDATION</p>
+          <h2>Rebuild the workstation, not just the explanation.</h2>
+          <p>My key repeatability test was to wipe a test workstation, start again with a fresh installation, and apply the documented deployment. That challenged an easy assumption: that the reference machine worked because of the playbook, rather than because of a manual change I had forgotten to document. The clean-install validation supported using the process across the fleet. <a class="source-link" href="#s1">[S1]</a></p>
+          <p>I also used a validation playbook to check the required components and installed packages, including the domain-related setup and Zoiper. I kept that automated result separate from the account tests. A “healthy” result from a presence check is not a substitute for successful user authentication or an end-to-end softphone call.</p>
+          <div class="table-scroll" role="region" aria-label="Reported validation and its limits" tabindex="0">
+            <table><thead><tr><th>Reported check</th><th>What it supported</th><th>What it did not establish</th></tr></thead><tbody>
+              <tr><td>Fresh-install deployment</td><td>The documented configuration could be applied to a clean workstation</td><td>Safe repeated execution on every already-configured host</td></tr>
+              <tr><td>Component/package validation</td><td>Required software and checked components were present</td><td>Complete application or identity health</td></tr>
+              <tr><td>Several domain logins</td><td>The tested employee accounts could authenticate</td><td>Every identity, policy, or offline-login scenario</td></tr>
+              <tr><td>Local administrator login</td><td>The tested local administrative account worked</td><td>All possible recovery or directory-outage conditions</td></tr>
+              <tr><td>Rejected root login</td><td>The particular root login test was denied</td><td>Every possible root-access mechanism was disabled</td></tr>
+            </tbody></table>
+          </div>
+          <h3>Repeatable deployment is not the same as proven idempotence.</h3>
+          <p>I did not establish a complete second-run test of the original playbooks against an already-configured machine. That is a different test from successfully configuring a fresh installation. Ansible supports idempotent behavior in many modules, but not every module or playbook automatically has it. A repeat-run test with recorded changes would be an improvement to the test suite, not a result I can retroactively claim. <a class="source-link" href="#s1">[S1]</a> <a class="source-link" href="#r1">[R1]</a></p>
+        </section>
+
+        <section id="rollout">
+          <p class="eyebrow">06 / PRODUCTION ROLLOUT</p>
+          <h2>Handle the exceptions without losing the baseline.</h2>
+          <p>After validating the reference deployment, I documented the process and applied the playbooks across the 50-workstation rollout. The deployment was not entirely free of exceptions: some endpoints failed their domain-join step. I targeted the affected workstations individually and reran that task; those retries succeeded. <a class="source-link" href="#s1">[S1]</a> <a class="source-link" href="#s2">[S2]</a></p>
+          <p>I suspected directory-server congestion, but the original error messages and measurements were not retained in the account available for this case study. A successful retry established recovery, not the root cause. It also does not mean all 50 join operations ran at the same instant.</p>
+          <p>The practical lesson was to make failures addressable. A shared configuration did not require treating every workstation as one indivisible job. I could identify the machines needing attention, narrow the action to the failed step, and check access again without describing the entire deployment as a failure.</p>
+          <div class="lesson"><span class="small-label">TROUBLESHOOTING RECORD</span><p><strong>Observed:</strong> some domain joins failed.<br><strong>Action:</strong> reran the join task against affected hosts individually.<br><strong>Result:</strong> targeted retries succeeded.<br><strong>Cause:</strong> not conclusively established.</p></div>
+        </section>
+
+        <section id="outcome">
+          <p class="eyebrow">07 / RESULTS</p>
+          <h2>A usable fleet, and a process worth keeping.</h2>
+          <p>The project standardized 50 workstations on a lighter Linux platform and kept the existing hardware useful, avoiding the immediate need for a fleet-wide replacement. More importantly for ongoing administration, I had a documented configuration and an automated way to apply it. That replaced repeated setup decisions with a defined baseline. <a class="source-link" href="#s1">[S1]</a></p>
+          <p>The strongest outcome is operational rather than a fabricated performance percentage: the machines remained usable for their intended role, the configuration process was made repeatable from a clean install, and specific access behavior was tested. I do not claim a measured dollar saving, a timed per-device deployment improvement, zero downtime, or complete security compliance from this work.</p>
+          <p>A stronger next iteration would retain per-host run summaries, explicitly test a second pass on an already-configured workstation, and expand workflow-level validation beyond component presence. Those are clearly identified improvements to the engineering process—not prerequisites being rewritten as completed achievements.</p>
+          <p><strong>This is the work I want the portfolio to show:</strong> understanding the workload, choosing a practical platform, turning configuration into code, testing the assumptions, and dealing with real deployment exceptions without overstating the evidence.</p>
+        </section>
+
+        <section id="sources" class="source-section">
+          <p class="eyebrow">SOURCE NOTES / PUBLICATION SCOPE</p>
+          <h2>What supports the story.</h2>
+          <p>This is a retrospective of completed production work based on my recorded deployment account and supporting career/project documentation. The original fleet-wide Ansible recap, playbook snapshot, and desktop screenshots are not included. The process panels are explanatory layouts, and the YAML is an explicitly illustrative example—not recreated proof of execution.</p>
+          <details open><summary>Project sources and limits</summary><dl class="source-list">
+            <div id="s1"><dt>S1 / Deployment account</dt><dd>October 8, 2026 operator account, retained in the professional-experience reference, project E02. Supports 50 fresh Lubuntu installations, reference configuration, Ansible package/setup work, clean-install testing, documented rollout, and hardware reuse. Earlier project records use the name AnsibleKing. Exact original rollout dates and distribution release are not assigned here.</dd></div>
+            <div id="s2"><dt>S2 / Identity and troubleshooting account</dt><dd>The same reference, project E03, records the domain components, short-name login, selected domain/local-account tests, root-login rejection, and successful targeted join retries. It does not supply a conclusive failure cause or a complete authentication configuration.</dd></div>
+            <div id="s3"><dt>S3 / Controller context</dt><dd>September 2026 infrastructure handover, section 4.3, records a Windows/WSL Ansible administration workflow and inventory. It is later supporting context, not evidence that every later VPN or remote-support task was part of the original deployment.</dd></div>
+          </dl></details>
+          <details><summary>Official technical references</summary><dl class="source-list">
+            <div id="r1"><dt>R1 / Playbooks and idempotence</dt><dd><a href="https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html">Ansible Community Documentation: playbooks</a>. Explains targeting, ordered tasks, and why not every playbook is idempotent. Reference checked October 13, 2026; it explains platform behavior, not historical execution.</dd></div>
+            <div id="r2"><dt>R2 / Package state</dt><dd><a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html">Ansible Community Documentation: ansible.builtin.apt</a>. Supports the package-state explanation and illustrative task. Reference checked October 13, 2026.</dd></div>
+          </dl></details>
+          <p class="publication-note">Production inventories, employee identities, domains, host addresses, credentials, and raw internal records are intentionally not reproduced. This case study does not certify fleet-wide hardening, MDM coverage, encryption, or an audited financial return.</p>
+        </section>
+        <div class="article-end"><div><span class="eyebrow">NEXT / NETWORK SECURITY</span><h2>From predictable endpoints<br>to an encrypted voice trunk.</h2></div><a class="button" href="../secure-voice-trunk/">Read the Twilio case study <span aria-hidden="true">↗</span></a></div>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../">greycarpet</a><span>Josh Escobar · Linux infrastructure &amp; network engineering</span><div><a href="../../resume/">Resume</a><a href="https://github.com/greycarpet">GitHub</a><span>© <span id="year">2026</span></span></div></div></footer>
+</body>
+</html>
