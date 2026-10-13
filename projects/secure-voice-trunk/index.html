@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C0E11">
+  <meta name="description" content="Josh Escobar's Linux networking case study: replacing a plaintext Asterisk-to-Twilio voice-trunk connection with verified TLS signaling and SRTP media.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Securing a Linux Voice Trunk | Josh Escobar — greycarpet">
+  <meta property="og:description" content="From plaintext SIP/RTP to verified TLS and SRTP: discovery, engineering constraints, cross-layer troubleshooting, and the evidence that proved the tested connection was secure.">
+  <meta property="og:url" content="https://greycarpet.github.io/projects/secure-voice-trunk/">
+  <title>Securing a Linux Voice Trunk — Josh Escobar | greycarpet</title>
+  <link rel="canonical" href="https://greycarpet.github.io/projects/secure-voice-trunk/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="case-study.css">
+  <script src="../../script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to case study</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a>
+      <span class="brand-descriptor" aria-hidden="true">/ engineering portfolio</span>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="../../#work">Work</a><a href="../../#experience">Experience</a><a href="../../#about">About</a>
+        <a class="nav-contact" href="../../#contact">Contact <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <header class="study-hero">
+      <div class="wrap study-hero-inner">
+        <a class="back-link" href="../../#work"><span aria-hidden="true">←</span> All selected work</a>
+        <p class="eyebrow">01 / SELECTED WORK <span class="study-separator">·</span> LINUX NETWORKING + SECURITY</p>
+        <h1>Securing a production<br><span>voice trunk on Linux.</span></h1>
+        <p class="study-deck">From plaintext SIP/RTP to verified TLS signaling and SRTP audio—without rebuilding the platform or disrupting shared carrier configuration.</p>
+        <div class="study-byline"><span>Josh Escobar</span><span>Linux Networking Engineer</span><span>October 12–13, 2026</span></div>
+        <div class="study-tags" aria-label="Technologies"><span>openSUSE</span><span>Asterisk / PJSIP</span><span>VICIdial</span><span>Twilio</span><span>TLS 1.2</span><span>SRTP</span></div>
+        <div class="study-scope"><span class="status-indicator" aria-hidden="true"></span><strong>Verified boundary:</strong> outbound Linux-to-Twilio secure trunk pilot. This is not a declaration of organization-wide encryption or compliance.</div>
+      </div>
+      <div class="study-hero-motif" aria-hidden="true"><span></span><span></span><span></span></div>
+    </header>
+    <section class="wrap study-metrics" aria-label="Verified results">
+      <div><strong>4 / 4</strong><span>Gateway TLS probes passed</span><small>Chain and hostname validation</small></div>
+      <div><strong>TLS 1.2</strong><span>Verified signaling transport</span><small>Trusted server certificate</small></div>
+      <div><strong>SRTP = 1</strong><span>Negotiated secure audio</span><small>Answered Asterisk test channel</small></div>
+      <div><strong>45 sec</strong><span>Secure completed pilot call</span><small>Twilio CSV corroboration</small></div>
+    </section>
+
+    <div class="wrap study-layout">
+      <aside class="study-aside" aria-label="Case study contents">
+        <p class="aside-label">ON THIS PAGE</p>
+        <nav aria-label="Article sections">
+          <a href="#overview">Overview</a>
+          <a href="#baseline">01 — The plaintext baseline</a>
+          <a href="#constraints">02 — Risk and change scope</a>
+          <a href="#discovery">03 — Trust and host discovery</a>
+          <a href="#design">04 — Secure architecture</a>
+          <a href="#troubleshooting">05 — Two unexpected failures</a>
+          <a href="#proof">06 — Proving the secure call</a>
+          <a href="#follow-up">07 — Live-call follow-up</a>
+          <a href="#outcome">08 — Outcomes and limits</a>
+        </nav>
+        <div class="aside-links">
+          <a href="EVIDENCE.md">Evidence register <span aria-hidden="true">↗</span></a>
+          <a href="../../#work">All projects <span aria-hidden="true">↗</span></a>
+        </div>
+      </aside>
+      <article class="study-body" id="article">
+        <section id="overview" aria-labelledby="overview-title">
+          <p class="opening-statement">A working call is not proof of a secure call.</p>
+          <p>During a compliance-driven review of a production contact-center environment, I investigated whether the connection between our Linux telephony server and the voice carrier protected both call signaling and media. Calls were completing. The encryption controls were not.</p>
+          <p>I designed a separate outbound connection using SIP over TLS and Secure RTP (SRTP), worked through integration failures in VICIdial and Asterisk, and collected multiple forms of evidence that the tested call was encrypted. The goal was narrower than “make the phone system compliant”: secure a specific carrier leg, preserve existing service, and show exactly what had been verified.</p>
+
+          <div class="summary-card">
+            <h2 id="overview-title">Project at a glance</h2>
+            <div class="summary-grid">
+              <div><span>CHALLENGE</span><p>Plaintext carrier signaling and media despite healthy call completion.</p></div>
+              <div><span>APPROACH</span><p>Isolated PJSIP secure trunk, verified certificate trust, mandatory SRTP, application-owned configuration.</p></div>
+              <div><span>RESULT</span><p>Answered encrypted test call and matching Twilio record; wider deployment explicitly out of scope.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="baseline" aria-labelledby="baseline-title">
+          <p class="section-kicker">01 / THE BASELINE</p>
+          <h2 id="baseline-title">The carrier was reachable. The traffic was not protected.</h2>
+          <p>The initial read-only inventory found two active Twilio peers using legacy <code>chan_sip</code> over UDP port 5060. Their status was healthy, but both returned <code>Encryption: No</code>. The SIP TLS listener was disabled. A separate PJSIP listener used UDP port 5061—a useful reminder that port 5061 alone does not mean TLS is active.</p>
+          <p>SRTP support was already installed and loaded on the host. That did not change the baseline: the production carrier peers were not negotiating encrypted media. The problem existed in the actual transport and endpoint configuration, not merely in missing software.</p>
+
+          <figure class="evidence-screen">
+            <div class="screen-top"><span>01 — BASELINE / REDACTED EXCERPT</span><span class="screen-flag warning">PLAINTEXT PATH</span></div>
+            <pre><code>UDP Bindaddress:       0.0.0.0:5060
+TCP SIP Bindaddress:   Disabled
+TLS SIP Bindaddress:   Disabled
+Allowed transports:    UDP
+
+[Selected legacy carrier fields]
+Status       : OK (23 ms)
+Encryption   : No
+
+[Separate existing PJSIP transport]
+Transport: transport-udp   udp   0.0.0.0:5061</code></pre>
+            <figcaption><strong>Figure 1.</strong> Selected diagnostic output from the original discovery report. Peer identifiers are omitted. A successful SIP peer qualification did not demonstrate encrypted signaling or audio. <a href="EVIDENCE.md#e01">Evidence E01</a></figcaption>
+          </figure>
+        </section>
+
+        <section id="constraints" aria-labelledby="constraints-title">
+          <p class="section-kicker">02 / ENGINEERING CONSTRAINTS</p>
+          <h2 id="constraints-title">The safest change was not an in-place change.</h2>
+          <p>I owned the Linux-side investigation and implementation: platform and network discovery, Twilio trust validation, Asterisk configuration, VICIdial carrier integration, troubleshooting, controlled test execution, and evidence review. The design had to account for how the environment actually operated.</p>
+          <ul>
+            <li><strong>Shared production dependencies.</strong> Existing carriers were configured across telephony servers. Editing those shared records directly would have expanded the blast radius.</li>
+            <li><strong>Generated configuration.</strong> VICIdial generated the Asterisk carrier files. A quick edit to the generated <code>pjsip-vicidial.conf</code> would eventually be overwritten.</li>
+            <li><strong>Separate security and functionality criteria.</strong> A secure dial string that never connects is not an acceptable migration. A connected call that negotiates plaintext audio is not an acceptable remediation.</li>
+          </ul>
+          <p>I chose a <strong>parallel, server-scoped secure carrier</strong> rather than replacing the shared production route during initial testing. The old routes were preserved as an operational recovery path; they were <em>not</em> configured as an automatic plaintext fallback from the new encrypted endpoint.</p>
+        </section>
+
+        <section id="discovery" aria-labelledby="discovery-title">
+          <p class="section-kicker">03 / DISCOVERY</p>
+          <h2 id="discovery-title">Prove the network trust path before placing a call.</h2>
+          <p>The host ran openSUSE Leap 15.6 with Asterisk 18.26.4-vici. PJSIP and SRTP functionality were present. Asterisk was controlled by <code>vicidial.service</code>; a separate <code>asterisk.service</code> existed but was disabled. I also checked the certificate and private key pairing, process access to the required files, address and port conflicts, and the planned transport objects.</p>
+          <p>Before touching campaign routing, I tested the assigned Twilio termination hostname with chain verification, hostname matching, and SNI enabled. All four resolved IPv4 gateways completed TLS 1.2 handshakes with trusted certificates. The diagnostic probes negotiated <code>ECDHE-RSA-AES128-GCM-SHA256</code>—a property of the preflight probes, <em>not</em> an independently captured cipher from the later Asterisk call.</p>
+
+          <figure class="evidence-screen">
+            <div class="screen-top"><span>02 — TLS PREFLIGHT / REDACTED EXCERPT</span><span class="screen-flag">4 / 4 PASS</span></div>
+            <pre><code>CA-chain verification: REQUIRED
+Hostname validation:   REQUIRED
+SNI:                   REQUIRED
+Insecure retry:        DISABLED
+
+DNS IPv4 count=4 | probes capped at4
+
+[One gateway; IP address omitted]
+VERIFIED: trusted certificate chain
+          and requested hostname matched
+TLS=TLSv1.2
+cipher=ECDHE-RSA-AES128-GCM-SHA256
+
+TLS result: verified=4 failed=0</code></pre>
+            <figcaption><strong>Figure 2.</strong> A genuine preflight finding, condensed and sanitized for publication. It proves gateway reachability and certificate trust; it does not independently prove a completed SIP/SRTP call. <a href="EVIDENCE.md#e02">Evidence E02</a></figcaption>
+          </figure>
+          <p>That sequencing proved valuable: when Asterisk later produced a DNS-related error, I already knew the operating system could resolve the destination and establish a certificate-verified TLS connection.</p>
+        </section>
+
+        <section id="design" aria-labelledby="design-title">
+          <p class="section-kicker">04 / SECURE DESIGN</p>
+          <h2 id="design-title">Two channels. Two encryption requirements.</h2>
+          <p>Signaling and audio are separate problems. SIP sets up and controls the call; RTP carries voice packets. Moving SIP onto TLS without changing media would still leave the audio unprotected, so the new design explicitly required both controls.</p>
+          <div class="architecture" role="img" aria-label="Diagram showing an Asterisk/PJSIP server connecting to a dedicated Twilio secure trunk over TLS 1.2 signaling and SRTP audio. Legacy shared trunks remain separate and unchanged.">
+            <div class="arch-node"><span>LINUX TELEPHONY</span><strong>Asterisk / PJSIP</strong><small>VICIdial-generated endpoint</small></div>
+            <div class="arch-links"><span>TCP / TLS 1.2 · SIP</span><i aria-hidden="true"></i><span>UDP / SRTP · VOICE</span><i aria-hidden="true"></i></div>
+            <div class="arch-node"><span>VOICE CARRIER</span><strong>Twilio</strong><small>Dedicated secure trunk</small></div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Layer</th><th>Legacy carrier</th><th>Isolated secure path</th></tr></thead>
+              <tbody>
+                <tr><td>Signaling</td><td>SIP over UDP / 5060</td><td>SIP over TLS 1.2 / TCP 5061</td></tr>
+                <tr><td>Audio</td><td>Plain RTP</td><td>SRTP using SDES negotiation</td></tr>
+                <tr><td>Certificate trust</td><td>No signaling TLS</td><td>Trusted chain + wildcard-aware hostname checking</td></tr>
+                <tr><td>Media policy</td><td>Not encrypted</td><td>Required encryption; optimistic fallback disabled</td></tr>
+                <tr><td>Change scope</td><td>Shared legacy carriers</td><td>New VICIdial carrier for one server</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>On Twilio I provisioned a separate secure outbound trunk with IP-based authorization limited to a single-host <code>/32</code> ACL. On Asterisk I explicitly selected its TLS transport and used <code>media_encryption=sdes</code> with <code>media_encryption_optimistic=no</code>. I kept the persistent transport, endpoint, and address-of-record definitions in the VICIdial carrier configuration rather than modifying generated output files.</p>
+          <div class="code-example">
+            <div class="screen-top"><span>DESIGN EXCERPT / IDENTIFIERS SANITIZED</span><span>NON-DEPLOYABLE EXAMPLE</span></div>
+            <pre><code>[secure-transport]
+type=transport
+protocol=tls
+method=tlsv1_2
+verify_server=yes
+allow_wildcard_certs=yes
+
+[secure-endpoint]
+type=endpoint
+transport=secure-transport
+media_encryption=sdes
+media_encryption_optimistic=no
+srtp_tag_32=no
+direct_media=no</code></pre>
+          </div>
+          <p class="figure-note">This deliberately incomplete excerpt illustrates the controls, not the full production configuration. Twilio's secure-trunk implementation used SDES for media key negotiation; this was not a WebRTC DTLS-SRTP deployment.</p>
+        </section>
+
+        <section id="troubleshooting" aria-labelledby="troubleshooting-title">
+          <p class="section-kicker">05 / TROUBLESHOOTING</p>
+          <h2 id="troubleshooting-title">The implementation exposed two application-layer failures.</h2>
+          <h3>1. VICIdial rewrote a legitimate-looking SIP contact.</h3>
+          <p>The first attempt included the URI parameter <code>;transport=tls</code> at the end of the carrier contact. After VICIdial persisted the record, the contact appeared as <code>:5061transport=tls</code>. The removed semicolon left a malformed address and an unavailable endpoint.</p>
+          <p>The transformation was consistent with semicolon sanitization identified in the VICIdial source review. Instead of bypassing the application by editing generated Asterisk files, I corrected the persistent contact to a semicolon-free hostname and port, and retained the endpoint's explicit TLS transport. Source review showed that the selected PJSIP transport could still choose TLS without the URI parameter.</p>
+          <div class="before-after">
+            <div><span>OBSERVED AFTER PERSISTENCE</span><code>sip:carrier.example:5061transport=tls</code><small>Malformed contact · unavailable</small></div>
+            <div><span>CORRECTED PERSISTENT CONTACT</span><code>sip:carrier.example:5061</code><small>Explicit TLS transport retained</small></div>
+          </div>
+          <h3>2. DNS was working; Asterisk's new transport state was not fully ready.</h3>
+          <p>After correcting the contact, Asterisk still reported <code>PJLIB_UTIL_EDNSNOANSWERREC</code>. I compared that error with working system DNS, successful certificate-verified TLS probes, and the Asterisk transport configuration. The evidence did not support changing resolvers, disabling certificate checks, or pinning a single carrier IP.</p>
+          <p>The version-specific source review suggested that PJSIP's resolver had captured transport availability at process startup. A reload had introduced the TLS listener, but the resolver still behaved as if that transport type were unavailable. This remained a source-supported diagnosis, rather than an instrumented proof of every internal state transition.</p>
+          <p>After inspecting the installed <code>vicidial.service</code> unit and its launcher, confirming no active calls at the maintenance snapshot, and performing a controlled VICIdial-managed restart, the remote contact qualified successfully. The loaded TLS settings remained strict. I did not enable a second Asterisk service or downgrade any security requirements.</p>
+          <p>I then compared the generated configuration with the live PJSIP objects. The corrected settings survived the configuration lifecycle; the requested rebuild flag was confirmed returned to its idle value. The encrypted endpoint's availability was established before separately evaluating campaign routing.</p>
+          <figure class="evidence-screen">
+            <div class="screen-top"><span>03 — ASTERISK RUNTIME / GROUPED FIELDS</span><span class="screen-flag">STRICT POLICY</span></div>
+            <pre><code>[TLS transport]
+method                      : tlsv1_2
+protocol                    : tls
+verify_server               : Yes
+allow_wildcard_certs        : Yes
+bind                        : 0.0.0.0:5061
+
+[Outbound endpoint]
+media_encryption            : sdes
+media_encryption_optimistic : false
+srtp_tag_32                 : false
+direct_media                : false
+dtmf_mode                   : rfc4733</code></pre>
+            <figcaption><strong>Figure 3.</strong> Selected original runtime fields grouped for legibility. These demonstrate loaded encryption policy; they are not by themselves evidence of negotiated media on a completed call. <a href="EVIDENCE.md#e03">Evidence E03</a></figcaption>
+          </figure>
+        </section>
+
+        <section id="proof" aria-labelledby="proof-title">
+          <p class="section-kicker">06 / VALIDATION</p>
+          <h2 id="proof-title">Proof required more than one green indicator.</h2>
+          <p>I designed the controlled acceptance test to answer four separate questions: Could Linux establish a trusted TLS path? Did Asterisk load the intended security policy? Was SRTP actually negotiated on an answered call? Did the carrier independently record the call as secure?</p>
+          <p>The initial echo test placed one authorized call with no automatic retries, a 30-second answer timeout, and a 120-second absolute bound. The test was designed not to alter configuration, enable recording, or capture sensitive SDP/SDES key material. I answered the call, heard my speech echoed, and used <code>#</code> to terminate it. This verified functional two-way audio and DTMF behavior for that tested path.</p>
+          <figure class="evidence-screen highlight-screen">
+            <div class="screen-top"><span>04 — ANSWERED ECHO TEST / REDACTED</span><span class="screen-flag">SRTP NEGOTIATED</span></div>
+            <pre><code>ONE attempt; no automatic retries
+No configuration edits or SDP trace collection
+
+Owned pilot channel: [redacted]
+  {"srtp": "1", "state": "Up"}
+
+Answered Up observed: True
+Negotiated SRTP audio flags while Up: ["1"]
+SRTP negotiation flag 1 observed: True
+
+Callfile finished; no owned channel remains.</code></pre>
+            <figcaption><strong>Figure 4.</strong> Asterisk reported negotiated encrypted audio on the answered channel. The test collector read <code>CHANNEL(rtp,secure,audio)</code>; this is stronger evidence than simply observing an endpoint named “secure.” <a href="EVIDENCE.md#e04">Evidence E04</a></figcaption>
+          </figure>
+          <p>I correlated the test with the matching Twilio export. The carrier reported a <strong>completed 45-second call with <code>Secure Trunking=true</code></strong>. I preserved the exported duration rather than recalculating it from rounded timestamps. A trunk identifier was null in that export, so the local endpoint configuration and matching call details were used for route attribution without inventing missing metadata.</p>
+          <div class="verification-grid">
+            <div><span>01</span><strong>Network</strong><small>4/4 trusted TLS connections</small></div>
+            <div><span>02</span><strong>Application</strong><small>Explicit TLS, strict SDES</small></div>
+            <div><span>03</span><strong>Media</strong><small>Answered SRTP flag = 1</small></div>
+            <div><span>04</span><strong>Carrier</strong><small>Completed + Secure Trunking=true</small></div>
+          </div>
+          <p>These results supported one defensible conclusion: <strong>the tested outbound Linux-to-Twilio leg used verified TLS signaling and negotiated secure media.</strong> The tests did not establish security for other legs of the call, stored recordings, or every production campaign.</p>
+        </section>
+
+        <section id="follow-up" aria-labelledby="follow-up-title">
+          <p class="section-kicker">07 / FOLLOW-UP</p>
+          <h2 id="follow-up-title">Real traffic revealed a different class of issue.</h2>
+          <p>An October 13 follow-up review recorded 19 Twilio call entries marked <code>Secure Trunking=true</code>: nine completed, six no-answer, and four failed. Seven calls were correlated with the supplied Asterisk output. These are historical findings retained from the earlier analysis; the raw October 13 attachments are <em>not</em> included or independently re-parsed in this public package.</p>
+          <div class="mini-stats"><div><strong>9</strong><span>Completed</span></div><div><strong>6</strong><span>No answer</span></div><div><strong>4</strong><span>Failed</span></div><div><strong>19</strong><span>Total secure-marked entries</span></div></div>
+          <p>Nineteen secure-marked entries do not mean nineteen successful encrypted audio sessions. The failed and unanswered attempts were not treated as completed-media evidence, and the sample does not prove cluster-wide migration or a stable call-completion rate.</p>
+          <p>The review also found local FastAGI connection refusals—a separate logging/application dependency that could coexist with a successful encrypted carrier connection. I did not misdiagnose those refusals as TLS failures, or claim to have repaired them in this project. Conference and recording-related events in the call flow were not proof of recording integrity or encryption at rest.</p>
+        </section>
+
+        <section id="outcome" aria-labelledby="outcome-title">
+          <p class="section-kicker">08 / RESULT + ENGINEERING LESSONS</p>
+          <h2 id="outcome-title">A measured security improvement, with its boundary intact.</h2>
+          <p>This project established a functional secure outbound carrier path without a full telephony-platform replacement or Asterisk rebuild. It resolved a real transport-security gap on the tested connection while preserving the existing production routes during staging. The work also exposed why configuration persistence and process lifecycle can matter just as much as firewall reachability and cryptographic capabilities.</p>
+          <p>Several items remained for broader production acceptance: renewal and TLS certificate-refresh testing, secure-trunk call-setup capacity, sustained campaign routing, the FastAGI refusal, transfer/hold/failover scenarios, and independent negative testing against plaintext media. Inbound, agent-side, inter-server, PSTN, and recording-at-rest protection were outside the validated scope. A successful pilot was not represented as HIPAA compliance.</p>
+          <blockquote>Configuration expresses intent. Runtime negotiation and corroborating evidence establish what actually happened.</blockquote>
+          <p>That is the engineering practice this case study demonstrates: start with the actual baseline, isolate the change, understand the owning service and application, challenge misleading error messages, and prove outcomes without overstating them.</p>
+          <div class="closing-meta">
+            <div><strong>Engineering role</strong><span>Linux Networking Engineer</span></div>
+            <div><strong>Primary systems</strong><span>Linux · Asterisk · PJSIP · VICIdial · Twilio</span></div>
+            <div><strong>Evidence</strong><span><a href="EVIDENCE.md">Read provenance and limitations ↗</a></span></div>
+          </div>
+          <div class="publication-notice">
+            <h3>Publication note</h3>
+            <p>The terminal-like panels above are <strong>sanitized publication layouts of selected diagnostic text</strong>, not untouched screenshots or newly executed tests. Hostnames, phone numbers, internal addressing, unique call identifiers, private keys, SDP/SDES key material, raw recordings, and other sensitive artifacts are intentionally withheld. All figures reference the evidence register.</p>
+          </div>
+        </section>
+      </article>
+    </div>
+    <section class="study-next">
+      <div class="wrap study-next-inner">
+        <div><p class="eyebrow">NEXT / MORE ENGINEERING WORK</p><h2>Explore the rest<br>of the work.</h2></div>
+        <a class="button primary" href="../../#work">Back to selected projects <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a>
+      <span class="footer-descriptor">Josh Escobar · Linux infrastructure &amp; network engineering</span>
+      <div class="footer-end"><a href="https://github.com/greycarpet" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><span>© <span id="year">2026</span> Josh Escobar</span></div>
+    </div>
+  </footer>
+</body>
+</html>
