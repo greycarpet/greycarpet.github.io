@@ -66,7 +66,7 @@
           <a href="#outcome">08 — Outcomes and limits</a>
         </nav>
         <div class="aside-links">
-          <a href="EVIDENCE.md">Evidence register <span aria-hidden="true">↗</span></a>
+          <a href="evidence.html">Evidence register <span aria-hidden="true">↗</span></a>
           <a href="../../#work">All projects <span aria-hidden="true">↗</span></a>
         </div>
       </aside>
@@ -105,7 +105,7 @@ Encryption   : No
 
 [Separate existing PJSIP transport]
 Transport: transport-udp   udp   0.0.0.0:5061</code></pre>
-            <figcaption><strong>Figure 1.</strong> Selected diagnostic output from the original discovery report. Peer identifiers are omitted. A successful SIP peer qualification did not demonstrate encrypted signaling or audio. <a href="EVIDENCE.md#e01">Evidence E01</a></figcaption>
+            <figcaption><strong>Figure 1.</strong> Selected diagnostic output from the original discovery report. Peer identifiers are omitted. A successful SIP peer qualification did not demonstrate encrypted signaling or audio. <a href="evidence.html#e01">Evidence E01</a></figcaption>
           </figure>
         </section>
 
@@ -143,7 +143,7 @@ TLS=TLSv1.2
 cipher=ECDHE-RSA-AES128-GCM-SHA256
 
 TLS result: verified=4 failed=0</code></pre>
-            <figcaption><strong>Figure 2.</strong> A genuine preflight finding, condensed and sanitized for publication. It proves gateway reachability and certificate trust; it does not independently prove a completed SIP/SRTP call. <a href="EVIDENCE.md#e02">Evidence E02</a></figcaption>
+            <figcaption><strong>Figure 2.</strong> A genuine preflight finding, condensed and sanitized for publication. It proves gateway reachability and certificate trust; it does not independently prove a completed SIP/SRTP call. <a href="evidence.html#e02">Evidence E02</a></figcaption>
           </figure>
           <p>That sequencing proved valuable: when Asterisk later produced a DNS-related error, I already knew the operating system could resolve the destination and establish a certificate-verified TLS connection.</p>
         </section>
@@ -220,7 +220,7 @@ media_encryption_optimistic : false
 srtp_tag_32                 : false
 direct_media                : false
 dtmf_mode                   : rfc4733</code></pre>
-            <figcaption><strong>Figure 3.</strong> Selected original runtime fields grouped for legibility. These demonstrate loaded encryption policy; they are not by themselves evidence of negotiated media on a completed call. <a href="EVIDENCE.md#e03">Evidence E03</a></figcaption>
+            <figcaption><strong>Figure 3.</strong> Selected original runtime fields grouped for legibility. These demonstrate loaded encryption policy; they are not by themselves evidence of negotiated media on a completed call. <a href="evidence.html#e03">Evidence E03</a></figcaption>
           </figure>
         </section>
 
@@ -242,7 +242,7 @@ Negotiated SRTP audio flags while Up: ["1"]
 SRTP negotiation flag 1 observed: True
 
 Callfile finished; no owned channel remains.</code></pre>
-            <figcaption><strong>Figure 4.</strong> Asterisk reported negotiated encrypted audio on the answered channel. The test collector read <code>CHANNEL(rtp,secure,audio)</code>; this is stronger evidence than simply observing an endpoint named “secure.” <a href="EVIDENCE.md#e04">Evidence E04</a></figcaption>
+            <figcaption><strong>Figure 4.</strong> Asterisk reported negotiated encrypted audio on the answered channel. The test collector read <code>CHANNEL(rtp,secure,audio)</code>; this is stronger evidence than simply observing an endpoint named “secure.” <a href="evidence.html#e04">Evidence E04</a></figcaption>
           </figure>
           <p>I correlated the test with the matching Twilio export. The carrier reported a <strong>completed 45-second call with <code>Secure Trunking=true</code></strong>. I preserved the exported duration rather than recalculating it from rounded timestamps. A trunk identifier was null in that export, so the local endpoint configuration and matching call details were used for route attribution without inventing missing metadata.</p>
           <div class="verification-grid">
@@ -273,7 +273,7 @@ Callfile finished; no owned channel remains.</code></pre>
           <div class="closing-meta">
             <div><strong>Engineering role</strong><span>Linux Networking Engineer</span></div>
             <div><strong>Primary systems</strong><span>Linux · Asterisk · PJSIP · VICIdial · Twilio</span></div>
-            <div><strong>Evidence</strong><span><a href="EVIDENCE.md">Read provenance and limitations ↗</a></span></div>
+            <div><strong>Evidence</strong><span><a href="evidence.html">Read provenance and limitations ↗</a></span></div>
           </div>
           <div class="publication-notice">
             <h3>Publication note</h3>
