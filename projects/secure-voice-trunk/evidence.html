@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C0E11">
+  <meta name="description" content="Evidence and limitations for Josh Escobar's Linux-to-Twilio TLS/SRTP case study.">
+  <title>Evidence &amp; Source Notes — Secure Voice Trunk | greycarpet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="case-study.css">
+  <script src="../../script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#evidence">Skip to evidence</a>
+  <header class="site-header"><div class="nav-shell">
+    <a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a>
+    <span class="brand-descriptor" aria-hidden="true">/ engineering portfolio</span>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+    <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+      <a href="../../#work">Work</a><a href="../../#experience">Experience</a><a href="../../#about">About</a><a class="nav-contact" href="../../#contact">Contact ↗</a>
+    </nav>
+  </div></header>
+  <main id="main">
+    <header class="study-hero">
+      <div class="wrap study-hero-inner">
+        <a class="back-link" href="./">← Return to the case study</a>
+        <p class="eyebrow">SECURE VOICE TRUNK / EVIDENCE REGISTER</p>
+        <h1>Evidence, not<br><span>just assertions.</span></h1>
+        <p class="study-deck">Sanitized diagnostic excerpts, their provenance, and the precise boundaries of what each result establishes.</p>
+        <div class="study-scope">The panels are typeset excerpts, not untouched terminal screenshots. No raw recordings, unique call-party records, private keys, or credentials are included.</div>
+      </div>
+    </header>
+    <div class="wrap study-layout">
+      <aside class="study-aside" aria-label="Evidence navigation">
+        <p class="aside-label">EVIDENCE FILES</p>
+        <nav aria-label="Evidence sections">
+          <a href="#e01">E01 — Plaintext baseline</a>
+          <a href="#e02">E02 — Certificate trust</a>
+          <a href="#e03">E03 — Runtime policy</a>
+          <a href="#e04">E04 — Negotiated SRTP</a>
+          <a href="#e05">E05 — Carrier record</a>
+          <a href="#e06">E06 — Traffic follow-up</a>
+          <a href="#limits">Scope and references</a>
+        </nav>
+        <div class="aside-links"><a href="./">Case study ↗</a><a href="EVIDENCE.md">Markdown source ↗</a></div>
+      </aside>
+      <article id="evidence" class="study-body">
+        <section id="e01">
+          <p class="section-kicker">E01 / OCTOBER 12 DISCOVERY</p>
+          <h2>Unencrypted baseline</h2>
+          <p>From the read-only Asterisk discovery report. Legacy peer name omitted. A successful peer state and UDP/5061 listener did not constitute an encrypted trunk.</p>
+          <figure class="evidence-screen"><div class="screen-top"><span>SANITIZED DIAGNOSTIC EXCERPT</span><span class="screen-flag warning">PLAINTEXT</span></div><pre><code>UDP Bindaddress:        0.0.0.0:5060
+TCP SIP Bindaddress:    Disabled
+TLS SIP Bindaddress:    Disabled
+Allowed transports:     UDP
+
+[Selected legacy peer fields]
+Status       : OK (23 ms)
+Encryption   : No
+
+[Existing PJSIP transport]
+Transport: transport-udp   udp   0.0.0.0:5061</code></pre><figcaption>Original discovery report: <code>ECA_Dialer4_TLS_SRTP_Discovery_v1_results_20261012_144501_49860.txt</code>. Identifiers omitted; lines selected for relevance.</figcaption></figure>
+        </section>
+        <section id="e02">
+          <p class="section-kicker">E02 / OCTOBER 12 TLS PREFLIGHT</p><h2>Four successful gateway handshakes</h2>
+          <p>Original v4 preflight used CA-chain validation, hostname validation, and SNI without insecure retry. It was a network-level certificate trust test, not a media or application call test.</p>
+          <figure class="evidence-screen"><div class="screen-top"><span>REDACTED TLS PROBE</span><span class="screen-flag">4 / 4 PASS</span></div><pre><code>CA-chain verification, hostname validation and SNI are mandatory.
+DNS IPv4 count=4 | probes capped at4
+
+[Gateway addressing removed]
+VERIFIED: trusted certificate chain
+          and requested hostname matched
+TLS=TLSv1.2
+cipher=ECDHE-RSA-AES128-GCM-SHA256
+
+TLS result: verified=4 failed=0</code></pre><figcaption>Original focused preflight: <code>ECA_Dialer4_Secure_Trunk_Preflight_v4_results_20261012_202649_21916.txt</code>. The cipher is from Python probes; it was not captured from the Asterisk call.</figcaption></figure>
+        </section>
+        <section id="e03">
+          <p class="section-kicker">E03 / LOADED ASTERISK CONFIGURATION</p><h2>Transport and endpoint policy</h2>
+          <p>Post-test runtime output confirmed an explicit TLS transport and mandatory SDES media policy. It was compared with VICIdial-generated configuration. This proved loaded intent, not a call's negotiated media on its own.</p>
+          <figure class="evidence-screen"><div class="screen-top"><span>GROUPED RUNTIME FIELDS</span><span class="screen-flag">ENCRYPTION REQUIRED</span></div><pre><code>[Selected TLS transport fields]
+method                      : tlsv1_2
+protocol                    : tls
+verify_server               : Yes
+allow_wildcard_certs        : Yes
+bind                        : 0.0.0.0:5061
+
+[Selected endpoint fields]
+media_encryption            : sdes
+media_encryption_optimistic : false
+srtp_tag_32                 : false
+direct_media                : false
+dtmf_mode                   : rfc4733</code></pre><figcaption>Original Asterisk runtime output supplied as <code>Pasted text(1).txt</code>. Fields grouped; spacing normalized; paths and identifiers omitted.</figcaption></figure>
+        </section>
+        <section id="e04">
+          <p class="section-kicker">E04 / ANSWERED TEST CHANNEL</p><h2>Negotiated secure audio</h2>
+          <p>The one-call echo test observed an answered PJSIP channel reporting SRTP = 1, read via <code>CHANNEL(rtp,secure,audio)</code>. The operator independently confirmed audible echo and DTMF termination.</p>
+          <figure class="evidence-screen highlight-screen"><div class="screen-top"><span>ANSWERED CALL / IDENTIFIERS REDACTED</span><span class="screen-flag">SRTP = 1</span></div><pre><code>ONE attempt; no automatic retries
+No configuration edits, recording, restarts, or SIP/SDP trace collection.
+
+Owned pilot channel: [redacted]
+  {"srtp": "1", "state": "Up"}
+
+Answered Up observed: True
+Negotiated SRTP audio flags while Up: ["1"]
+SRTP negotiation flag 1 observed: True
+
+Callfile finished; no owned channel remains.</code></pre><figcaption>Original controlled test report: <code>ECA_Dialer4_Encrypted_Echo_Test_v1_results_20261012_215411_10808.txt</code>. The quoted values support this one call, not full-system encryption.</figcaption></figure>
+        </section>
+        <section id="e05">
+          <p class="section-kicker">E05 / TWILIO CALL RECORD</p><h2>Independent carrier corroboration</h2>
+          <p>A matching Twilio call export, reviewed October 12, marked the 45-second test call completed with <code>Secure Trunking=true</code>. Its Trunk SID field was null; no explanation for that null field is invented. The local endpoint configuration and matching time/call details supported attribution.</p>
+          <div class="table-scroll"><table><thead><tr><th>Export field</th><th>Observed value</th></tr></thead><tbody><tr><td>Direction</td><td>Trunking Terminating</td></tr><tr><td>Status</td><td>Completed</td></tr><tr><td>Duration</td><td>45 seconds (exported)</td></tr><tr><td>Secure Trunking</td><td>true</td></tr><tr><td>Start date</td><td>October 12, 2026 (America/Chicago)</td></tr></tbody></table></div>
+        </section>
+        <section id="e06">
+          <p class="section-kicker">E06 / OCTOBER 13 FOLLOW-UP REVIEW</p><h2>Secure-marked traffic outcomes</h2>
+          <p>The previously completed review of submitted Asterisk output and a Twilio CSV recorded 19 secure-marked entries (nine completed, six no-answer, four failed). Seven were correlated with Asterisk output. The raw October 13 attachments were not available for re-parsing when this public write-up was first assembled; these values remain historical review findings.</p>
+          <div class="mini-stats"><div><strong>9</strong><span>Completed</span></div><div><strong>6</strong><span>No answer</span></div><div><strong>4</strong><span>Failed</span></div><div><strong>19</strong><span>Total secure-marked</span></div></div>
+          <p>Failed/unanswered attempts are not successful audio-session evidence. Local FastAGI connection refusals were also noted; they are an unresolved application/logging issue rather than proof of a TLS failure.</p>
+        </section>
+        <section id="limits">
+          <p class="section-kicker">PUBLICATION BOUNDARY</p><h2>What this register does not establish</h2>
+          <p>The evidence confirms a <strong>defined outbound Asterisk-to-Twilio secure trunk path and an answered encrypted test call</strong>. It does not establish organization-wide encryption, inbound/agent/inter-server/PSTN protections, complete recording security, renewal/refresh lifecycle, call-capacity sufficiency, exhaustive failover or transfer testing, plaintext-offer rejection, or organizational compliance certification.</p>
+          <h3>Platform references</h3>
+          <ul><li><a href="https://www.twilio.com/docs/sip-trunking">Twilio Elastic SIP Trunking</a></li><li><a href="https://www.twilio.com/docs/sip-trunking/troubleshooting">Twilio troubleshooting and call logs</a></li><li><a href="https://docs.asterisk.org/Latest_API/API_Documentation/Module_Configuration/res_pjsip/">Asterisk PJSIP configuration</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/res/res_pjsip/pjsip_resolver.c">Asterisk 18.26.4 resolver source</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/channels/pjsip/dialplan_functions.c">Asterisk 18.26.4 PJSIP channel functions</a></li></ul>
+          <div class="publication-notice"><h3>Owner review required before publication</h3><p>Professional history, environmental details and sanitized excerpts should be checked against the employer's disclosure requirements. The public web page and repository source require review; redaction of only the visible page is insufficient.</p></div>
+        </section>
+      </article>
+    </div>
+    <section class="study-next"><div class="wrap study-next-inner"><div><p class="eyebrow">BACK / PROJECT NARRATIVE</p><h2>The engineering<br>story behind the data.</h2></div><a class="button primary" href="./">Read the case study ↗</a></div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a><span class="footer-descriptor">Josh Escobar · Linux infrastructure &amp; network engineering</span><div class="footer-end"><a href="https://github.com/greycarpet" target="_blank" rel="noopener noreferrer">GitHub ↗</a><span>© <span id="year">2026</span> Josh Escobar</span></div></div></footer>
+</body>
+</html>
