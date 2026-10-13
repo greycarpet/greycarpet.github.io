@@ -129,6 +129,9 @@ h2 { font-weight:500; font-size:clamp(35px, 4vw, 49px); letter-spacing:-.055em; 
 .project-tags span { padding:5px 9px; border:1px solid #3e4b57; color:#b7c3ce; font:11px var(--gc-font-mono); }
 .project-copy .project-status { color:#c5d7e1 !important; font:12px/1.6 var(--gc-font-mono) !important; }
 .project-copy .project-status .status-indicator { margin-right:6px; }
+.project-read { display:inline-flex; align-items:center; gap:20px; padding:12px 17px; min-height:47px; border:1px solid #749aae; background:rgba(165,223,255,.065); color:#dff2fc; font:600 13px var(--gc-font-body); transition:background .18s,border-color .18s,transform .18s; }
+.project-read span { color:var(--gc-accent); }
+.project-read:hover { background:rgba(165,223,255,.14); border-color:var(--gc-accent); transform:translateY(-1px); }
 .project-copy .project-availability { margin-top: 12px; padding-top:12px; border-top:1px solid #38444e; color:#a5b1bb !important; font-size:13px !important; }
 .automation-pipeline { position:absolute; z-index:2; top:75px; display:flex; gap:10px; align-items:center; white-space:nowrap; font:10px var(--gc-font-mono); color:#d1e0ea; }
 .automation-pipeline span { border:1px solid #617481; background:#18232c; padding:10px 11px; }
