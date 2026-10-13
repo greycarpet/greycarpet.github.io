@@ -311,3 +311,39 @@ h2 { font-weight:500; font-size:clamp(35px, 4vw, 49px); letter-spacing:-.055em; 
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
 }
+
+
+/* Homepage career timeline — complements the approved Nocturnal Lab tokens */
+.career-layout { display:grid; grid-template-columns: 1.12fr .88fr; gap: clamp(30px,5vw,80px); align-items:start; }
+.career-timeline { border-left:1px solid #475864; margin-left:6px; }
+.career-item { position:relative; margin:0 0 27px; padding:2px 0 22px 25px; border-bottom:1px solid #35434e; }
+.career-item::before { position:absolute; content:""; top:5px; left:-5px; width:8px; height:8px; background:var(--gc-accent); border:1px solid var(--gc-bg); border-radius:50%; }
+.career-date { font:500 11px var(--gc-font-mono); color:var(--gc-accent); letter-spacing:.04em; }
+.career-item h3 { margin:10px 0 5px; font:500 clamp(20px,2.3vw,26px)/1.23 var(--gc-font-display); letter-spacing:-.03em; }
+.career-place { color:#bfced7; font-size:14px; margin:0 0 10px; }
+.career-item>p:last-child { color:#b6c3cc; font-size:15px; line-height:1.75; margin:0; }
+.career-resume-link { display:inline-flex; gap:12px; margin:3px 0 0 25px; min-height:44px; align-items:center; text-decoration:underline; text-decoration-color:#7795a7; text-underline-offset:5px; color:#e0eef6; font-size:14px; font-weight:600; }
+.career-resume-link span { color:var(--gc-accent); }
+.career-resume-link:hover { text-decoration-color:var(--gc-accent); }
+.career-aside { border:1px solid #475764; background:#1a252e; padding:30px; }
+.career-aside .overline { margin:0 0 20px; }
+.career-measure { display:grid; grid-template-columns:140px 1fr; gap:18px; align-items:center; padding:20px 0; border-top:1px solid #425362; }
+.career-measure strong { font:500 clamp(29px,3vw,39px)/1.1 var(--gc-font-display); color:var(--gc-accent); letter-spacing:-.05em; white-space:nowrap; }
+.career-measure .career-unit { padding-left:4px; font:400 13px var(--gc-font-mono); letter-spacing:-.02em; color:#cee8f4; }
+.career-measure>span { color:#bbcad4; font-size:13px; line-height:1.65; }
+.career-footnote { border-top:1px solid #425362; padding-top:15px; margin:0 0 21px; color:#aabac6; font-size:12px; line-height:1.75; }
+.career-button { width:100%; border:1px solid #80aabd; color:#e0f4ff; background:rgba(165,223,255,.06); }
+.career-button:hover { background:rgba(165,223,255,.14); }
+.about-resume-link { color:#d6effb; text-decoration:underline; text-decoration-color:#64899e; text-underline-offset:5px; font-size:14px; }
+.about-resume-link:hover { text-decoration-color:var(--gc-accent); }
+
+@media (max-width:900px) {
+  .career-layout { gap:25px; grid-template-columns:1fr; }
+  .career-aside { max-width:640px; }
+}
+@media (max-width:620px) {
+  .career-aside { padding:21px; }
+  .career-measure { grid-template-columns:110px 1fr; gap:11px; }
+  .career-measure strong { font-size:31px; }
+  .career-item h3 { font-size:23px; }
+}
