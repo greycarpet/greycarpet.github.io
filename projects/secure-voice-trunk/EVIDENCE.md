@@ -5,7 +5,7 @@
 **Project window:** October 12–13, 2026  
 **Status:** Publication-selected excerpts and attributed historical findings. No raw production logs or call-party records are published.
 
-This register separates (a) observations from original October 12 diagnostic files, (b) implementation details supported by the retained engineering record and operator confirmation, and (c) October 13 follow-up findings retained from an earlier review. Every on-page terminal panel is a **typeset, sanitized excerpt**, not an untouched screenshot, live command session, or newly executed test. Technical headings and redactions are editorial.
+This register separates (a) observations from original October 12 diagnostic files, (b) implementation details supported by the retained engineering record, (c) October 13 follow-up findings retained from an earlier review, and (d) the environment owner’s October 13 confirmation that the secure trunk is deployed for production calls. Every on-page terminal panel is a **typeset, sanitized excerpt**, not an untouched screenshot, live command session, or newly executed test. Technical headings and redactions are editorial.
 
 ## E01 — Plaintext baseline <a id="e01"></a>
 
@@ -84,7 +84,7 @@ Callfile processing finished; no owned live pilot channel remains.
 Attempt record retained; running this script again will not redial.
 \`\`\`
 
-**Supports:** one answered channel reported negotiated SRTP (the Asterisk \`CHANNEL(rtp,secure,audio)\` observation). The operator separately confirmed hearing the echo and using \`#\` to end the call. **Does not prove:** encryption of other media legs, permanent recording integrity, or broader production rollout.
+**Supports:** one answered channel reported negotiated SRTP (the Asterisk \`CHANNEL(rtp,secure,audio)\` observation). The operator separately confirmed hearing the echo and using \`#\` to end the call. **Does not prove:** encryption of other media legs, permanent recording integrity, or the independently reported subsequent production rollout.
 
 ## E05 — Carrier-side corroboration
 
@@ -113,11 +113,20 @@ The export's specific trunk SID field was null. No cause for that missing field 
 
 Seven calls were correlated with supplied Asterisk output in that review. Separately observed local FastAGI connection refusals remain an application/logging investigation and were not claimed fixed. Unanswered and failed attempts are **not** successful media-session evidence. This is not a measurement of all calls in the company or of long-term success rates.
 
+
+## E07 — Production deployment confirmed by operator
+
+**Origin:** October 13, 2026 direct confirmation from the environment owner: **“The secure trunk is now being used in production. So it was successfully deployed and rollout.”** The quote establishes operator-reported deployment state, and is not a substitute for independently published campaign-routing or post-deployment system records.
+
+**Supports:** the project advanced beyond a laboratory-only pilot into live outbound calling via the dedicated secure trunk.
+
+**Does not prove:** a precise cutover timestamp, the exact list of migrated campaigns, that all outbound or inbound calls are secure, retirement of legacy trunks, specific production call volumes, recording protection, or organization-wide compliance.
+
 ## Scope and outstanding tests
 
-**Demonstrated:** a dedicated outbound Linux-to-Twilio trunk configured with verified TLS and mandatory SRTP; answered echo test with negotiated secure audio; matching secure completed carrier record.
+**Demonstrated by diagnostic evidence:** a dedicated outbound Linux-to-Twilio trunk configured with verified TLS and mandatory SRTP; an answered echo test with negotiated secure audio; and a matching secure completed carrier record. **Confirmed by the environment owner:** subsequent successful production rollout and use of that dedicated secure trunk for outbound calls.
 
-**Not demonstrated:** complete production migration, encryption of inbound/agent/inter-server/PSTN legs, at-rest recording protection, certificate renewal and live TLS refresh, load/CPS acceptance, comprehensive failover/transfer behavior, negative plaintext-offer rejection, or organizational HIPAA/SOC 2 certification. Other legacy paths remained available during pilot staging. This is a bounded transport-security improvement, not a broad compliance finding.
+**Not demonstrated:** complete migration of every campaign or voice leg, legacy trunk retirement, encryption of inbound/agent/inter-server/PSTN legs, at-rest recording protection, certificate renewal and live TLS refresh, sustained-load/CPS acceptance, comprehensive failover/transfer behavior, negative plaintext-offer rejection, or organizational HIPAA/SOC 2 certification. Legacy paths remained available during staging; their current use is not established here. This is an operationally deployed transport-security improvement with explicitly bounded evidence, not a broad compliance finding.
 
 ## References and interpretation
 
