@@ -1,0 +1,99 @@
+/* Shared presentation layer, loaded after each page's preserved base styles.
+   Brand: docs/brand/STYLE_GUIDE.md. No project narrative is rewritten here. */
+:root {
+  --gc-bg: #0c0e11; --gc-surface: #171b20; --gc-text: #e8ebef;
+  --gc-text-muted: #aab3bc; --gc-accent: #a5dfff; --gc-border: #343c44;
+  --gc-font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --gc-font-body: "DM Sans", "Segoe UI", Arial, sans-serif;
+  --gc-font-mono: "DM Mono", "Cascadia Code", Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 110px; }
+body { margin: 0; background: var(--gc-bg); color: var(--gc-text); font-family: var(--gc-font-body); }
+a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--gc-accent); outline-offset: 4px;
+}
+html body .site-header { position: sticky; top: 0; z-index: 50; height: auto; min-height: 80px; background: #0c0e11; border-bottom: 1px solid var(--gc-border); }
+html body .nav-shell { width: min(1160px, calc(100% - 64px)); min-height: 80px; margin: auto; display: flex; align-items: center; gap: 24px; }
+html body .brand { display: inline-flex; align-items: center; font: 600 25px/1.2 var(--gc-font-display); letter-spacing: -.055em; text-decoration: none; color: var(--gc-text); }
+html body .brand::before { content: ""; border-radius: 50%; background: var(--gc-accent); flex-shrink: 0; width: 7px; height: 7px; margin-right: 11px; }
+html body .brand-descriptor { font: 12px/1.5 var(--gc-font-mono); color: var(--gc-text-muted); }
+html body .site-nav { display: flex; position: static; flex-direction: row; align-items: center; gap: 27px; padding: 0; margin-left: auto; font-size: 14px; background: transparent; }
+html body .site-nav a { font: 500 14px/1.5 var(--gc-font-body); min-height: 44px; display: inline-flex; align-items: center; color: #d3dce3; text-decoration: none; }
+html body .site-nav a:hover, html body .site-nav a[aria-current] { color: var(--gc-accent); text-decoration: underline; text-underline-offset: 6px; }
+html body .site-nav .nav-contact { border: 1px solid #788b9a; padding: 10px 15px; }
+html body .menu-toggle { display: none; }
+html body .site-footer { border-top: 1px solid var(--gc-border); }
+html body .footer-inner { width: min(1160px, calc(100% - 64px)); margin: auto; min-height: 106px; padding: 26px 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px; font-size: 13px; color: var(--gc-text-muted); }
+html body .footer-inner > div { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+html body .footer-inner a:not(.brand) { color: var(--gc-text-muted); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+html body .footer-descriptor { font-size: 13px; }
+/* Readable technical text; code and wide tables scroll within their containers. */
+html body .study-body p, html body .study-body li { font-size: 17px; line-height: 1.8; }
+html body .study-body .section-kicker, html body .article section > .eyebrow { font-size: 12px !important; }
+html body .study-body figcaption, html body .article figcaption { font-size: 14px; }
+html body .evidence-screen pre, html body .code-example pre, html body .article pre { font-size: 13px; overflow: auto; }
+html body .screen-top { font-size: 12px; flex-wrap: wrap; }
+html body .study-aside nav a, html body .aside-links a { font-size: 12px; }
+html body .study-body table { min-width: 520px; }
+.gc-identity { align-self: center; padding: 24px; border: 1px solid #42515e; border-radius: 12px; background: var(--gc-surface); text-align: center; }
+.gc-identity img { display: block; width: 160px; height: 160px; margin: 0 auto 17px; border-radius: 9px; }
+.gc-identity strong { font: 500 25px var(--gc-font-display); letter-spacing: -.05em; }
+.gc-identity p { margin: 10px 0 0; color: var(--gc-text-muted); font-size: 14px; line-height: 1.65; }
+html body .about-section.gc-has-mascot { grid-template-columns: 270px minmax(0, 1fr); gap: 65px; }
+.gc-connect-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+.gc-download { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 12px 18px; border: 1px solid #849eae; border-radius: 4px; background: transparent; color: var(--gc-text); text-decoration: none; font: 600 14px/1.5 var(--gc-font-body); }
+.gc-download:hover { background: #263441; }
+.resume-tools .gc-download { width: 100%; background: var(--gc-accent); color: var(--gc-bg); border-color: var(--gc-accent); }
+.resume-tools .button { background: transparent; color: var(--gc-text); border: 1px solid #849eae; }
+.resume-tools .resume-note { font-size: 14px; line-height: 1.65; }
+html body .hero-description, html body .project-copy p:not(.project-kind) { font-size: 16px; }
+html body .hero-art .diagram-live { font-size: 10px; }
+html body .hero-corner-note { display: none; }
+/* Standalone missing-page layout; this is the one playful exception. */
+.gc-404 { width: min(980px, calc(100% - 48px)); min-height: 72vh; margin: auto; display: grid; grid-template-columns: 1fr 260px; align-items: center; gap: 48px; padding: 65px 0; }
+.gc-404 h1 { font: 500 clamp(40px, 6vw, 66px)/1.08 var(--gc-font-display); letter-spacing: -.055em; margin: 16px 0 24px; }
+.gc-404 .eyebrow { font: 12px var(--gc-font-mono); color: var(--gc-accent); letter-spacing: .07em; }
+.gc-404 p { max-width: 520px; color: var(--gc-text-muted); line-height: 1.75; font-size: 17px; }
+.gc-404 img { width: 100%; height: auto; border-radius: 14px; }
+.gc-404 a { color: var(--gc-accent); }
+.gc-404 .gc-download { color: var(--gc-text); }
+@media (max-width: 1050px) { html body .brand-descriptor { display: none; } }
+@media (max-width: 800px) {
+  html body .nav-shell, html body .footer-inner { width: calc(100% - 40px); }
+  html body .site-header, html body .nav-shell { min-height: 70px; }
+  html body .about-section.gc-has-mascot { grid-template-columns: 1fr; gap: 30px; }
+  .gc-identity { max-width: 440px; display: grid; grid-template-columns: 115px 1fr; gap: 20px; text-align: left; align-items: center; }
+  .gc-identity img { width: 115px; height: 115px; margin: 0; }
+  .gc-404 { grid-template-columns: 1fr; gap: 28px; }
+  .gc-404 img { max-width: 220px; }
+}
+@media (max-width: 680px) {
+  html body .nav-shell { flex-wrap: wrap; gap: 0; padding: 12px 0; }
+  /* Without JS, show links. Only collapse after the menu handler is installed. */
+  html body .site-nav { display: flex; width: 100%; margin: 14px 0 0; flex-wrap: wrap; gap: 6px 18px; border: 0; box-shadow: none; }
+  html body .site-nav a { padding: 8px 0; }
+  html body .site-nav .nav-contact { width: auto; margin: 0; padding: 8px 13px; }
+  html body .site-nav.gc-nav-ready { display: none; }
+  html body .site-nav.gc-nav-ready.is-open { display: flex; flex-direction: column; align-items: stretch; }
+  html body .menu-toggle.gc-nav-ready { display: flex; margin-left: auto; width: 44px; height: 44px; padding: 8px; border: 1px solid #8396a4; background: transparent; align-items: center; justify-content: center; flex-direction: column; gap: 7px; }
+  html body .menu-toggle span { width: 18px; height: 2px; background: var(--gc-text); }
+  html body .footer-inner { flex-direction: column; align-items: flex-start; }
+  html body .study-body p, html body .study-body li { font-size: 16px; }
+  html body .study-body .screen-top { font-size: 12px; }
+  html body .project-copy p:not(.project-kind) { font-size: 16px; }
+  .gc-identity { grid-template-columns: 90px 1fr; padding: 18px; gap: 15px; }
+  .gc-identity img { width: 90px; height: 90px; }
+  .gc-connect-actions { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  html body .site-header, html body .site-footer, .gc-connect-actions, .gc-identity { display: none !important; }
+}
+
+.skip-link { position:fixed; left:12px; top:12px; z-index:100; transform:translateY(-180%); background:var(--gc-accent); color:var(--gc-bg); padding:12px 18px; }
+.skip-link:focus { transform:none; }
