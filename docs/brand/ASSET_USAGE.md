@@ -14,6 +14,6 @@ The owner supplied and requested use of this image. No independent third-party c
 
 ## Public resume
 
-`assets/Josh_Escobar_Resume.pdf` is a two-page public resume based on the approved career and project material. It has a plain light print layout, selectable text, and links to the portfolio and case studies. It deliberately excludes phone/email and unapproved LinkedIn details. Do not describe it as a tagged or PDF/UA-certified document.
+`assets/Josh_Escobar_Resume.pdf` is a one-page public resume based on the approved career and project material. It has a plain light print layout, selectable text, and links to the portfolio and LinkedIn. It deliberately excludes phone and email; the LinkedIn URL was supplied by the owner for career materials. Do not describe it as a tagged or PDF/UA-certified document.
 
 Update the generator and review the PDF whenever career dates, metrics, certifications, or the HTML resume change. Ordinary report-generation fonts are not distributed as standalone files.

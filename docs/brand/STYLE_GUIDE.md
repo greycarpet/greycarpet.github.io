@@ -76,9 +76,9 @@ The order of emphasis matters:
 
 Preferred umbrella description:
 
-**Linux Infrastructure & Network Engineering**
+**Linux Systems & Infrastructure Engineer**
 
-Secondary specialties: security engineering, systems administration, infrastructure automation, VoIP/telephony, operations and troubleshooting.
+Current positioning, updated November 2026: hands-on individual contributor roles in Linux systems administration and infrastructure engineering. Preserve the real Director title in career history; do not position Josh for another management or Director role. Supporting skills include networking, security hardening, automation-assisted operations, VoIP, and troubleshooting.
 
 The portfolio may accurately describe Josh's management and leadership experience without obscuring hands-on engineering work. Use actual job titles in chronological experience; do not rewrite job history to match a target vacancy.
 
@@ -123,7 +123,7 @@ Use first-person language on About, Experience, and project narratives. Favor pr
 ### Example: homepage introduction
 
 > **Josh Escobar**  
-> **Linux Infrastructure & Network Engineering**  
+> **Linux Systems & Infrastructure Engineer**
 > I build, secure, troubleshoot, and automate the systems that keep operations running. Here you'll find real projects, engineering decisions, and evidence of the work behind them.
 
 This is a **copy direction**, not approved final homepage text.

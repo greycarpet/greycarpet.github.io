@@ -1,77 +1,166 @@
-"""Build the public resume snapshot. Requires Python 3.10+ and ReportLab.
-Keep career facts synchronized with resume/index.html and review both PDF pages.
-This script generates a local artifact; it does not upload or deploy anything.
+"""Build the public, one-page resume. Requires ReportLab and Python 3.10+.
+Career content matches the November 2026 resume and career evidence profile.
+Public contact uses LinkedIn; phone and email remain in the application copy.
+Run from any directory; inspect the generated PDF before publishing.
 """
 from pathlib import Path
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, KeepTogether
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import letter
-import hashlib
 ROOT = Path(__file__).resolve().parents[1]
 out = ROOT / 'assets' / 'Josh_Escobar_Resume.pdf'
-out.parent.mkdir(parents=True, exist_ok=True)
-styles={
- 'name':ParagraphStyle('name',fontName='Helvetica-Bold',fontSize=26,leading=29,textColor=HexColor('#17212b'),spaceAfter=4),
- 'role':ParagraphStyle('role',fontName='Helvetica',fontSize=12,leading=16,textColor=HexColor('#334d60'),spaceAfter=7),
- 'meta':ParagraphStyle('meta',fontName='Helvetica',fontSize=9.4,leading=14,textColor=HexColor('#3c4853'),spaceAfter=9),
- 'section':ParagraphStyle('section',fontName='Helvetica-Bold',fontSize=11,leading=14,spaceBefore=12,spaceAfter=7,textColor=HexColor('#244a63'),keepWithNext=True),
- 'job':ParagraphStyle('job',fontName='Helvetica-Bold',fontSize=11,leading=15,spaceBefore=5,spaceAfter=3,keepWithNext=True),
- 'dates':ParagraphStyle('dates',fontName='Helvetica',fontSize=9.4,leading=13,textColor=HexColor('#4a5662'),spaceAfter=5,keepWithNext=True),
- 'body':ParagraphStyle('body',fontName='Helvetica',fontSize=10,leading=14.1,spaceAfter=6),
- 'bullet':ParagraphStyle('bullet',fontName='Helvetica',fontSize=9.8,leading=13.6,spaceAfter=5,leftIndent=10,firstLineIndent=-10),
+styles = {
+ 'Title': ParagraphStyle('name', fontName='Helvetica-Bold', fontSize=26, leading=29, spaceAfter=1),
+ 'Subtitle': ParagraphStyle('target', fontName='Helvetica-Bold', fontSize=15, leading=18, spaceAfter=9),
+ 'Contact': ParagraphStyle('contact', fontName='Helvetica', fontSize=9, leading=11, spaceAfter=8),
+ 'Heading 1': ParagraphStyle('section', fontName='Helvetica-Bold', fontSize=10, leading=12, spaceBefore=7, spaceAfter=3, keepWithNext=True),
+ 'Normal': ParagraphStyle('body', fontName='Helvetica', fontSize=9.5, leading=11.1, spaceAfter=2),
+ 'List Bullet': ParagraphStyle('bullet', fontName='Helvetica', fontSize=9.5, leading=11.1, leftIndent=16, firstLineIndent=-10, spaceAfter=3),
+ 'Date': ParagraphStyle('date', fontName='Helvetica', fontSize=9, leading=11.1, alignment=2),
 }
+
+CONTENT = [('Title', 'JOSH ESCOBAR', 'JOSH ESCOBAR'),
+ ('Subtitle',
+  'LINUX SYSTEMS AND INFRASTRUCTURE ENGINEER',
+  'LINUX SYSTEMS AND INFRASTRUCTURE ENGINEER'),
+ ('Contact',
+  'Austin, TX | <link '
+  'href="https://www.linkedin.com/in/joshescobarx/">linkedin.com/in/joshescobarx</link> | <link '
+  'href="https://greycarpet.github.io/">greycarpet.github.io</link>',
+  ''),
+ ('Heading 1', 'PROFESSIONAL SUMMARY', 'PROFESSIONAL SUMMARY'),
+ ('Normal',
+  'Hands-on infrastructure professional and U.S. Coast Guard veteran focused on Linux '
+  'administration, networking, automation, and production support. Delivered Linux migrations, '
+  'improved VoIP reliability, and automated business reporting. Seeking individual contributor '
+  'opportunities in Linux systems administration and infrastructure engineering.',
+  'Hands-on infrastructure professional and U.S. Coast Guard veteran focused on Linux '
+  'administration, networking, automation, and production support. Delivered Linux migrations, '
+  'improved VoIP reliability, and automated business reporting. Seeking individual contributor '
+  'opportunities in Linux systems administration and infrastructure engineering.'),
+ ('Heading 1', 'TECHNICAL SKILLS', 'TECHNICAL SKILLS'),
+ ('Normal',
+  '<b>Systems: </b>Ubuntu, Lubuntu, openSUSE/ViciBox, systemd, SSH, Samba, LUKS, ext4, Linux '
+  'permissions',
+  'Systems: Ubuntu, Lubuntu, openSUSE/ViciBox, systemd, SSH, Samba, LUKS, ext4, Linux permissions'),
+ ('Normal',
+  '<b>Networking and security: </b>TCP/IP, DNS, WireGuard, firewalls, Fail2ban, packet capture, '
+  'TLS/SRTP',
+  'Networking and security: TCP/IP, DNS, WireGuard, firewalls, Fail2ban, packet capture, TLS/SRTP'),
+ ('Normal',
+  '<b>Operations: </b>Grafana, Prometheus, Uptime Kuma, Asterisk, VICIdial, Windows endpoints, '
+  'Active Directory fundamentals',
+  'Operations: Grafana, Prometheus, Uptime Kuma, Asterisk, VICIdial, Windows endpoints, Active '
+  'Directory fundamentals'),
+ ('Normal',
+  '<b>Automation: </b>Basic Bash and SQL; AI-assisted Ansible, Python automation, PowerShell, and '
+  'Docker Compose configuration',
+  'Automation: Basic Bash and SQL; AI-assisted Ansible, Python automation, PowerShell, and Docker '
+  'Compose configuration'),
+ ('Normal',
+  '<b>Certifications: </b>CompTIA A+, Network+, Linux+',
+  'Certifications: CompTIA A+, Network+, Linux+'),
+ ('Heading 1', 'PROFESSIONAL EXPERIENCE', 'PROFESSIONAL EXPERIENCE'),
+ ('Normal',
+  '<b>ECA Direct, Inc. | Austin, TX</b>\tOctober 2023–Present',
+  'ECA Direct, Inc. | Austin, TX\tOctober 2023–Present'),
+ ('Normal',
+  '<b>Director of Information Technology</b>\tNovember 2025–Present',
+  'Director of Information Technology\tNovember 2025–Present'),
+ ('Normal',
+  'Technical owner for approximately 50 employees, 200,000–250,000 monthly call minutes, and '
+  'approximately 25 agents at peak production concurrency.',
+  'Technical owner for approximately 50 employees, 200,000–250,000 monthly call minutes, and '
+  'approximately 25 agents at peak production concurrency.'),
+ ('List Bullet',
+  'Migrated approximately 300 GB of sensitive client data to Ubuntu/Samba with LUKS encryption and '
+  'rebuilt access controls, with no operating-hours disruption for six users.',
+  'Migrated approximately 300 GB of sensitive client data to Ubuntu/Samba with LUKS encryption and '
+  'rebuilt access controls, with no operating-hours disruption for six users.'),
+ ('List Bullet',
+  'Automated reporting across 32 campaigns and delivered a self-service platform using AI-assisted '
+  'development, reducing estimated weekly effort from eight staff hours to 30 minutes.',
+  'Automated reporting across 32 campaigns and delivered a self-service platform using AI-assisted '
+  'development, reducing estimated weekly effort from eight staff hours to 30 minutes.'),
+ ('List Bullet',
+  'Migrated telephony from VPS to VDS without agent disruption; reported voice-quality complaints '
+  'fell from 3–5 per week to zero following the March 2026 cutover.',
+  'Migrated telephony from VPS to VDS without agent disruption; reported voice-quality complaints '
+  'fell from 3–5 per week to zero following the March 2026 cutover.'),
+ ('List Bullet',
+  'Used Grafana/Prometheus alerts to identify and contain unauthorized cryptomining; preserved '
+  'evidence, revoked compromised access, and hardened SSH with no production downtime.',
+  'Used Grafana/Prometheus alerts to identify and contain unauthorized cryptomining; preserved '
+  'evidence, revoked compromised access, and hardened SSH with no production downtime.'),
+ ('List Bullet',
+  'Corrected IVR routing and queue timeouts, reducing affected toll-free inbound charges by 74% '
+  'and saving $923.56 in the following billing cycle.',
+  'Corrected IVR routing and queue timeouts, reducing affected toll-free inbound charges by 74% '
+  'and saving $923.56 in the following billing cycle.'),
+ ('Normal',
+  '<b>Information Technology Support Specialist</b>\tOctober 2023–November 2025',
+  'Information Technology Support Specialist\tOctober 2023–November 2025'),
+ ('List Bullet',
+  'Migrated approximately 50 aging Windows workstations to Lubuntu over a weekend, returning the '
+  'fleet to service by the next business day with limited hardware upgrades.',
+  'Migrated approximately 50 aging Windows workstations to Lubuntu over a weekend, returning the '
+  'fleet to service by the next business day with limited hardware upgrades.'),
+ ('List Bullet',
+  'Standardized applications and endpoint security through AI-assisted Ansible development; '
+  'estimated provisioning time fell from 1–2 hours to about 10 minutes per workstation.',
+  'Standardized applications and endpoint security through AI-assisted Ansible development; '
+  'estimated provisioning time fell from 1–2 hours to about 10 minutes per workstation.'),
+ ('List Bullet',
+  'Contained an unauthorized-calling incident using Firewalld, Fail2ban, SSH restrictions, and '
+  'credential rotation; authored the root-cause analysis.',
+  'Contained an unauthorized-calling incident using Firewalld, Fail2ban, SSH restrictions, and '
+  'credential rotation; authored the root-cause analysis.'),
+ ('Normal',
+  '<b>Information Systems Technician | United States Coast Guard</b>\tDecember 2019–December 2021',
+  'Information Systems Technician | United States Coast Guard\tDecember 2019–December 2021'),
+ ('List Bullet',
+  'Supported approximately 60+ users across Windows, Active Directory, classified and unclassified '
+  'accounts, endpoint support, and authentication devices.',
+  'Supported approximately 60+ users across Windows, Active Directory, classified and unclassified '
+  'accounts, endpoint support, and authentication devices.'),
+ ('List Bullet',
+  'Assisted a senior administrator with a Windows Server 2012-to-2016 domain controller upgrade, '
+  'completing installation and validation within a one-hour maintenance window.',
+  'Assisted a senior administrator with a Windows Server 2012-to-2016 domain controller upgrade, '
+  'completing installation and validation within a one-hour maintenance window.'),
+ ('List Bullet',
+  'Installed and configured a Red Hat-based Minotaur HUB, including operating system, networking, '
+  'and application configuration.',
+  'Installed and configured a Red Hat-based Minotaur HUB, including operating system, networking, '
+  'and application configuration.'),
+ ('Heading 1', 'EDUCATION', 'EDUCATION'),
+ ('Normal',
+  'Network Engineer Program | CyberTex Institute of Technology\tExpected February 2027',
+  'Network Engineer Program | CyberTex Institute of Technology\tExpected February 2027'),
+ ('Normal',
+  'B.S., User Experience | Full Sail University\t2024',
+  'B.S., User Experience | Full Sail University\t2024')]
 story=[]
-def p(t,typ='body'):return Paragraph(t,styles[typ])
-def add(t,typ='body'):story.append(p(t,typ))
-def job(title,place,dates,bullets):
- story.extend([p(title,'job'),p(place+' | '+dates,'dates')]);story.extend(p('&#8226; '+x,'bullet') for x in bullets)
-add('Josh Escobar','name');add('Linux Infrastructure &amp; Network Engineering','role')
-add('Austin, Texas | U.S. Coast Guard veteran<br/><link href="https://greycarpet.github.io/" color="#244a63">greycarpet.github.io</link> | <link href="https://github.com/greycarpet" color="#244a63">github.com/greycarpet</link>','meta')
-add('Hands-on IT leader and infrastructure engineer focused on Linux systems, secure network operations, telephony, and practical automation. Experience spans end-user support, production administration, business-rule discovery, and controlled technical change.','body')
-add('PROFESSIONAL EXPERIENCE','section')
-job('Director of Information Technology','ECA Direct - Austin, TX','Nov 2025 - Present',[
-'Administer Linux production services, Asterisk/VICIdial telephony, networking, remote access, file services, and operational systems supporting customer-facing campaigns.',
-'Designed and rolled out a production Twilio connection using TLS signaling and SRTP media after a controlled Linux/PJSIP verification pilot.',
-'Developed and validated Python/SQL reporting automation; estimated about 20 staff hours saved weekly and approximately 90% fewer reporting errors in recurring client deliverables.',
-'Directed the transition to remote operations using Linux-hosted services, WireGuard connectivity, controlled file access, and remote-support workflows.',
-'Corrected an after-hours IVR/queue behavior; affected toll-free charges declined 74% in the next full billing cycle.'
-])
-job('Lead IT Support Specialist','ECA Direct - Austin, TX','Oct 2023 - Nov 2025',[
-'Supported workstation provisioning, employee onboarding/offboarding, access controls, and production troubleshooting across Linux and Windows systems.',
-'Migrated 50 aging workstations to a standardized Lubuntu configuration and built Ansible playbooks and checks to reduce repeated setup work.',
-'Helped restore centralized identity and file access with Ubuntu/Samba Active Directory and separate network storage following a server failure.'
-])
-job('Information Systems Technician','United States Coast Guard','Dec 2019 - Dec 2021',[
-'Supported 60+ personnel using Windows workstations, Active Directory, devices, printers, and secure information systems.',
-'Managed account onboarding, access validation, equipment preparation, and incident support; contributed to an operational Minotaur HUB node and emergency IT readiness.'
-])
-job('Fireman','United States Coast Guard','Nov 2017 - Dec 2019',[
-'Served in maritime operations and maintenance, developing safety discipline, procedural rigor, and operational accountability before moving into information systems.'
-])
-story.append(PageBreak())
-add('TECHNICAL SKILLS','section')
-for head,body in [
-('Linux & systems','Ubuntu, openSUSE, Lubuntu, systemd, SSH, package management, Samba, Linux permissions, storage and services.'),
-('Networking & telephony','TCP/IP, DNS, routing, WireGuard VPN, firewalls, Asterisk, VICIdial, SIP, TLS, SRTP and Twilio.'),
-('Automation & data','Ansible, Python, SQL, Git, YAML, reporting workflows, configuration validation and operational scripts.'),
-('Infrastructure operations','Docker Compose, PostgreSQL, Redis, Nginx, SFTPGo, monitoring, incident investigation, documentation and change control.')]:
- add('<b>'+head.replace('&','&amp;')+'</b><br/>'+body)
-add('SELECTED ENGINEERING WORK','section')
-for title,body,url in [
-('Production voice trunk encryption','Validated certificate trust, resolved PJSIP/VICIdial transport behavior, verified negotiated encrypted audio on an answered call, and rolled the secure Twilio trunk into production.','secure-voice-trunk'),
-('Linux endpoint configuration','Standardized 50 Lubuntu workstations using documented installation and Ansible-based provisioning. Validated a clean-install rebuild before fleet application.','ansible-linux-deployment'),
-('Reporting workflow automation','Translated manual reporting rules into reusable Python/SQL processes for cleaning, validation, calculations and deliverables; evolved the tooling into a Linux-hosted reporting application.','reporting-hub')]:
- add(title,'job');add(body);add(f'<link href="https://greycarpet.github.io/projects/{url}/" color="#244a63">greycarpet.github.io/projects/{url}/</link>','meta')
-add('EDUCATION & CERTIFICATIONS','section')
-add('<b>CompTIA A+ | Network+ | Linux+</b><br/>Professional certifications')
-add('<b>Network Engineering Program</b><br/>CyberTex Institute of Technology | In progress, expected February 2027')
-add('<b>Bachelor of Science, User Experience</b><br/>Full Sail University | Completed November 2024')
-add('PUBLIC PORTFOLIO','section')
-add('Read the project narratives for engineering decisions, validation evidence and the scope of reported outcomes. Weekly time savings and error reduction are estimates; the 74% reduction applies to the affected toll-free expense.','body')
-def frame(c,doc):
- c.setTitle('Josh Escobar - Linux Infrastructure and Network Engineering Resume');c.setAuthor('Josh Escobar');c.setSubject('Public professional resume - greycarpet');c.setCreator('greycarpet public resume generator')
- w,h=letter;c.setStrokeColor(HexColor('#cbd2d8'));c.line(42,34,w-42,34);c.setFont('Helvetica',8);c.setFillColor(HexColor('#45545f'));c.drawString(42,22,'Josh Escobar  /  greycarpet  /  October 2026');c.drawRightString(w-42,22,str(doc.page))
-doc=SimpleDocTemplate(str(out),pagesize=letter,rightMargin=42,leftMargin=42,topMargin=35,bottomMargin=44,title='Josh Escobar - Resume',author='Josh Escobar',pageCompression=1)
+for kind,html,plain in CONTENT:
+    if '\t' in plain:
+        # Right-aligned dates retain a predictable, selectable reading order.
+        left,right=html.split('\t',1)
+        row=Table([[Paragraph(left,styles['Normal']),Paragraph(right,styles['Date'])]],colWidths=[342,146.4], hAlign='LEFT')
+        row.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),0),('BOTTOMPADDING',(0,0),(-1,-1),2)]))
+        row.keepWithNext=True
+        story.append(row)
+    else:
+        if kind=='List Bullet':html='&#8226; '+html
+        story.append(Paragraph(html,styles[kind]))
+def frame(canvas,doc):
+    canvas.saveState()
+    canvas.setFillColor(HexColor('#94B6CF'))
+    canvas.rect(0,0,42,792,fill=1,stroke=0)
+    canvas.restoreState()
+    canvas.setTitle('Josh Escobar - Linux Systems and Infrastructure Engineer')
+    canvas.setAuthor('Josh Escobar')
+    canvas.setSubject('Hands-on individual contributor resume')
+doc=SimpleDocTemplate(str(out),pagesize=letter,leftMargin=72,rightMargin=39.6,topMargin=50,bottomMargin=39.6,pageCompression=1)
 doc.build(story,onFirstPage=frame,onLaterPages=frame)
-b=out.read_bytes();print('PDF bytes',len(b),'git hash',hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest())
+print(out)

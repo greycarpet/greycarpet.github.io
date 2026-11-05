@@ -1,6 +1,6 @@
 # greycarpet — Josh Escobar
 
-Personal portfolio for Linux infrastructure, network engineering, security and automation. The site is static HTML, CSS and a small progressive-enhancement script, served by GitHub Pages.
+Personal portfolio for Linux systems, infrastructure engineering, security and automation. The site is static HTML, CSS and a small progressive-enhancement script, served by GitHub Pages.
 
 ## Read the work
 
@@ -27,6 +27,6 @@ Open `http://localhost:8000/`. Inspect the home, resume, three case studies and 
 
 ## Updating the PDF
 
-`tools/build_public_resume.py` generates `assets/Josh_Escobar_Resume.pdf` with Python and ReportLab. Keep its approved content synchronized with the HTML resume, inspect both rendered pages, and review before committing. The PDF contains selectable text and links; the HTML resume remains the primary accessible version. PDF/UA compliance is not claimed.
+`tools/build_public_resume.py` generates `assets/Josh_Escobar_Resume.pdf` with Python and ReportLab. Keep its approved content synchronized with the HTML resume, inspect the rendered page, and review before committing. The PDF contains selectable text and links; the HTML resume remains the primary accessible version. PDF/UA compliance is not claimed.
 
-Public email, phone and LinkedIn details are not added without explicit approval. Do not commit private company records, credentials, raw logs, employee data or font files. A feature branch in this repository is public, not private storage.
+The public site and PDF use the owner-supplied LinkedIn profile for contact. Personal email and phone remain in the application resume rather than the public download. Do not commit private company records, credentials, raw logs, employee data or font files. A feature branch in this repository is public, not private storage.
