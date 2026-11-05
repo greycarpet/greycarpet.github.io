@@ -122,11 +122,15 @@ Seven calls were correlated with supplied Asterisk output in that review. Separa
 
 **Does not prove:** a precise cutover timestamp, the exact list of migrated campaigns, that all outbound or inbound calls are secure, retirement of legacy trunks, specific production call volumes, recording protection, or organization-wide compliance.
 
+## E08 — November 2026 owner clarification
+
+The owner confirmed that all 12 active campaigns migrated to the Twilio TLS/SRTP trunk during an October 2026 after-hours cutover with no reported downtime. This updates the earlier E07 coverage milestone. It is an operator-confirmed result, not a per-campaign audit derived from the pilot diagnostics. No additional voice-leg or compliance claims follow.
+
 ## Scope and outstanding tests
 
-**Demonstrated by diagnostic evidence:** a dedicated outbound Linux-to-Twilio trunk configured with verified TLS and mandatory SRTP; an answered echo test with negotiated secure audio; and a matching secure completed carrier record. **Confirmed by the environment owner:** subsequent successful production rollout and use of that dedicated secure trunk for outbound calls.
+**Demonstrated by diagnostic evidence:** a dedicated outbound Linux-to-Twilio trunk configured with verified TLS and mandatory SRTP; an answered echo test with negotiated secure audio; and a matching secure completed carrier record. **Confirmed by the environment owner:** subsequent October 2026 migration of all 12 active campaigns to that dedicated secure trunk with no reported cutover downtime (November clarification, E08).
 
-**Not demonstrated:** complete migration of every campaign or voice leg, legacy trunk retirement, encryption of inbound/agent/inter-server/PSTN legs, at-rest recording protection, certificate renewal and live TLS refresh, sustained-load/CPS acceptance, comprehensive failover/transfer behavior, negative plaintext-offer rejection, or organizational HIPAA/SOC 2 certification. Legacy paths remained available during staging; their current use is not established here. This is an operationally deployed transport-security improvement with explicitly bounded evidence, not a broad compliance finding.
+**Not demonstrated:** independently audited campaign coverage or protection of every voice leg, legacy trunk retirement, encryption of inbound/agent/inter-server/PSTN legs, at-rest recording protection, certificate renewal and live TLS refresh, sustained-load/CPS acceptance, comprehensive failover/transfer behavior, negative plaintext-offer rejection, or organizational HIPAA/SOC 2 certification. Legacy paths remained available during staging; their current use is not established here. This is an operationally deployed transport-security improvement with explicitly bounded evidence, not a broad compliance finding.
 
 ## References and interpretation
 

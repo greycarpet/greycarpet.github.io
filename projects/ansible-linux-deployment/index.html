@@ -36,8 +36,9 @@
       <p class="eyebrow">03 / LINUX INFRASTRUCTURE + AUTOMATION</p>
       <h1>50 workstations.<br><span>One defined baseline.</span></h1>
       <p class="deck">How I gave aging hardware a useful second life with Lubuntu—and turned a working desktop configuration into an Ansible-managed deployment process.</p>
-      <div class="byline"><span>Josh Escobar</span><span>Linux Infrastructure &amp; Automation</span><span>Written October 2026</span></div>
+      <div class="byline"><span>Josh Escobar</span><span>Linux Infrastructure &amp; Automation</span><span>Rollout October 2025 · Updated November 2026</span></div>
       <div class="tags" aria-label="Technologies"><span>Lubuntu</span><span>Ansible</span><span>YAML</span><span>SSH</span><span>Zoiper</span><span>Domain integration</span></div>
+      <div class="project-summary" aria-label="Project summary"><p><strong>Problem:</strong> Approximately 50 aging Windows workstations performed poorly and a large hardware refresh was outside the budget.</p><p><strong>My contribution:</strong> I selected Lubuntu, defined the baseline, and used AI-assisted Ansible development to implement configuration automation. I owned testing, deployment, troubleshooting, and validation.</p><p><strong>Outcome:</strong> The October 2025 weekend rollout returned the fleet to service by the next business day. Most hardware was reused; about 10 systems received SSD upgrades costing roughly $30 each.</p></div>
       <p class="status"><strong>Production implementation.</strong> Fresh operating-system installs followed by automated workstation configuration—not a claim of zero-touch OS deployment.</p>
     </header>
     <section class="metrics-band" aria-label="Project outcomes">
@@ -59,7 +60,7 @@
       <article class="article">
         <p class="standfirst">The goal was not simply to install Linux. It was to make the next workstation predictable.</p>
         <p>At ECA Direct, aging Windows workstations were struggling with ordinary agent work. Replacing the fleet was one possible answer, but I first investigated whether a lighter operating system could make the existing machines useful again. The resulting project standardized 50 workstations on Lubuntu, then used Ansible to apply the configuration needed for daily operations. <a class="source-link" href="#s1">[S1]</a></p>
-        <p>I owned the research, baseline definition, playbook development, testing, documentation, and rollout. The useful outcome was not just a different desktop: it was a defined setup that could be applied to a fresh installation instead of recreated from memory.</p>
+        <p>I owned the research, baseline definition, testing, documentation, and rollout, using AI assistance for playbook development and substantial scripting. The useful outcome was not just a different desktop: it was a defined setup that could be applied to a fresh installation instead of recreated from memory.</p>
 
         <section id="challenge">
           <p class="eyebrow">01 / THE PROBLEM</p>
@@ -149,7 +150,7 @@
           <p class="eyebrow">07 / RESULTS</p>
           <h2>A usable fleet, and a process worth keeping.</h2>
           <p>The project standardized 50 workstations on a lighter Linux platform and kept the existing hardware useful, avoiding the immediate need for a fleet-wide replacement. More importantly for ongoing administration, I had a documented configuration and an automated way to apply it. That replaced repeated setup decisions with a defined baseline. <a class="source-link" href="#s1">[S1]</a></p>
-          <p>The strongest outcome is operational rather than a fabricated performance percentage: the machines remained usable for their intended role, the configuration process was made repeatable from a clean install, and specific access behavior was tested. I do not claim a measured dollar saving, a timed per-device deployment improvement, zero downtime, or complete security compliance from this work.</p>
+          <p>All approximately 50 workstations were back in service by the next business day after the October 2025 weekend rollout. Estimated provisioning effort fell from 1–2 hours per workstation to about 10 minutes. The original manual estimate included OS installation, so this is an operational estimate rather than a controlled like-for-like benchmark. Estimated avoided replacement cost was $7,500–$10,000, based on roughly $150–$200 per unit; it is not audited net savings and does not subtract SSD spending. <a class="source-link" href="#s4">[S4]</a></p>
           <p>A stronger next iteration would retain per-host run summaries, explicitly test a second pass on an already-configured workstation, and expand workflow-level validation beyond component presence. Those are clearly identified improvements to the engineering process—not prerequisites being rewritten as completed achievements.</p>
           <p><strong>This is the work I want the portfolio to show:</strong> understanding the workload, choosing a practical platform, turning configuration into code, testing the assumptions, and dealing with real deployment exceptions without overstating the evidence.</p>
         </section>
@@ -159,10 +160,11 @@
           <h2>What supports the story.</h2>
           <p>This is a retrospective of completed production work based on my recorded deployment account and supporting career/project documentation. The original fleet-wide Ansible recap, playbook snapshot, and desktop screenshots are not included. The process panels are explanatory layouts, and the YAML is an explicitly illustrative example—not recreated proof of execution.</p>
           <details open><summary>Project sources and limits</summary><dl class="source-list">
-            <div id="s1"><dt>S1 / Deployment account</dt><dd>October 8, 2026 operator account, retained in the professional-experience reference, project E02. Supports 50 fresh Lubuntu installations, reference configuration, Ansible package/setup work, clean-install testing, documented rollout, and hardware reuse. Earlier project records use the name AnsibleKing. Exact original rollout dates and distribution release are not assigned here.</dd></div>
+            <div id="s1"><dt>S1 / Deployment account</dt><dd>October 8, 2026 operator account, retained in the professional-experience reference, project E02. Supports 50 fresh Lubuntu installations, reference configuration, Ansible package/setup work, clean-install testing, documented rollout, and hardware reuse. Earlier project records use the name AnsibleKing. The owner’s November 2026 clarification dates the rollout to October 2025; the exact distribution release remains unspecified.</dd></div>
             <div id="s2"><dt>S2 / Identity and troubleshooting account</dt><dd>The same reference, project E03, records the domain components, short-name login, selected domain/local-account tests, root-login rejection, and successful targeted join retries. It does not supply a conclusive failure cause or a complete authentication configuration.</dd></div>
             <div id="s3"><dt>S3 / Controller context</dt><dd>September 2026 infrastructure handover, section 4.3, records a Windows/WSL Ansible administration workflow and inventory. It is later supporting context, not evidence that every later VPN or remote-support task was part of the original deployment.</dd></div>
           </dl></details>
+          <p id="s4"><strong>S4 / Owner clarification, November 2026.</strong> Confirms the October 2025 rollout, return to service by the next business day, approximately 10 SSD upgrades, and estimated provisioning effort and avoided replacement cost. AI-assisted playbook development is distinguished from ownership of design, testing, and rollout.</p>
           <details><summary>Official technical references</summary><dl class="source-list">
             <div id="r1"><dt>R1 / Playbooks and idempotence</dt><dd><a href="https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html">Ansible Community Documentation: playbooks</a>. Explains targeting, ordered tasks, and why not every playbook is idempotent. Reference checked October 13, 2026; it explains platform behavior, not historical execution.</dd></div>
             <div id="r2"><dt>R2 / Package state</dt><dd><a href="https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html">Ansible Community Documentation: ansible.builtin.apt</a>. Supports the package-state explanation and illustrative task. Reference checked October 13, 2026.</dd></div>
@@ -173,6 +175,6 @@
       </article>
     </div>
   </main>
-  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../">greycarpet</a><span>Josh Escobar · Linux infrastructure &amp; network engineering</span><div><a href="../../resume/">Resume</a><a href="https://github.com/greycarpet">GitHub</a><span>© <span id="year">2026</span></span></div></div></footer>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../">greycarpet</a><span>Josh Escobar · Linux systems &amp; infrastructure engineering</span><div><a href="../../resume/">Resume</a><a href="https://github.com/greycarpet">GitHub</a><span>© <span id="year">2026</span></span></div></div></footer>
 </body>
 </html>

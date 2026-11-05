@@ -44,6 +44,7 @@
           <a href="#e05">E05 — Carrier record</a>
           <a href="#e06">E06 — Traffic follow-up</a>
           <a href="#e07">E07 — Production deployment</a>
+          <a href="#e08">E08 — Updated campaign coverage</a>
           <a href="#limits">Scope and references</a>
         </nav>
         <div class="aside-links"><a href="./">Case study ↗</a><a href="EVIDENCE.md">Markdown source ↗</a></div>
@@ -126,19 +127,20 @@ Callfile finished; no owned channel remains.</code></pre><figcaption>Original co
           <p class="section-kicker">E07 / OCTOBER 13 PRODUCTION STATUS</p>
           <h2>Secure trunk deployed for live outbound calling</h2>
           <p>The environment owner has confirmed that the dedicated secure trunk was successfully deployed and rolled out, and that it is now used for production outbound calls. This is an <strong>operator-confirmed deployment milestone</strong>, distinct from the earlier captured pilot diagnostics and Twilio call export.</p>
-          <p>No sanitized cutover ticket, campaign routing inventory, complete post-deployment call population, or certificate renewal proof has been included in the publication package. Accordingly, the deployment is described as successful <em>for the new secure trunk</em>, without asserting that every campaign or voice leg has transitioned or that the environment has achieved a broader compliance certification.</p>
+          <p>No sanitized cutover ticket, complete routing inventory, post-deployment call population, or certificate renewal proof is included. This October 13 milestone is retained as historical context; the later owner-confirmed campaign coverage is recorded in E08. Neither milestone establishes broader compliance certification or protection of every voice leg.</p>
         </section>
+        <section id="e08"><p class="section-kicker">E08 / NOVEMBER 2026 OWNER CLARIFICATION</p><h2>All 12 active campaigns migrated</h2><p>The owner confirmed an October 2026 after-hours cutover of all 12 active campaigns to the Twilio TLS/SRTP trunk with no reported downtime. This updates campaign coverage beyond the earlier E07 milestone. It is an operator-confirmed outcome; the original pilot diagnostics are not a per-campaign audit. Encryption of inbound, agent, inter-server, PSTN, and recording paths remains outside the demonstrated scope.</p></section>
         <section id="limits">
           <p class="section-kicker">PUBLICATION BOUNDARY</p><h2>What this register does not establish</h2>
-          <p>The original test data confirms <strong>a secure outbound Asterisk-to-Twilio trunk path and an answered encrypted call</strong>; the operator separately confirms that the same secure trunk is now used in production. Neither assertion establishes organization-wide encryption, full legacy-route retirement, protection of all inbound/agent/inter-server/PSTN legs, complete recording security, certificate-refresh reliability, sustained load capacity, comprehensive failover/transfer testing, plaintext-offer rejection, or organizational compliance certification.</p>
+          <p>The original test data confirms <strong>a secure outbound Asterisk-to-Twilio trunk path and an answered encrypted call</strong>; the operator separately confirms that all 12 active campaigns migrated to the secure trunk in October 2026. Neither assertion establishes organization-wide encryption, full legacy-route retirement, protection of all inbound/agent/inter-server/PSTN legs, complete recording security, certificate-refresh reliability, sustained load capacity, comprehensive failover/transfer testing, plaintext-offer rejection, or organizational compliance certification.</p>
           <h3>Platform references</h3>
           <ul><li><a href="https://www.twilio.com/docs/sip-trunking">Twilio Elastic SIP Trunking</a></li><li><a href="https://www.twilio.com/docs/sip-trunking/troubleshooting">Twilio troubleshooting and call logs</a></li><li><a href="https://docs.asterisk.org/Latest_API/API_Documentation/Module_Configuration/res_pjsip/">Asterisk PJSIP configuration</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/res/res_pjsip/pjsip_resolver.c">Asterisk 18.26.4 resolver source</a></li><li><a href="https://raw.githubusercontent.com/asterisk/asterisk/18.26.4/channels/pjsip/dialplan_functions.c">Asterisk 18.26.4 PJSIP channel functions</a></li></ul>
-          <div class="publication-notice"><h3>Owner review required before publication</h3><p>Professional history, environmental details and sanitized excerpts should be checked against the employer's disclosure requirements. The public web page and repository source require review; redaction of only the visible page is insufficient.</p></div>
+          <div class="publication-notice"><h3>Publication scope</h3><p>The public excerpts omit credentials, private keys, call-party identifiers, recordings, and production addressing. Original diagnostic evidence and later operator-confirmed deployment outcomes are identified separately.</p></div>
         </section>
       </article>
     </div>
     <section class="study-next"><div class="wrap study-next-inner"><div><p class="eyebrow">BACK / PROJECT NARRATIVE</p><h2>The engineering<br>story behind the data.</h2></div><a class="button primary" href="./">Read the case study ↗</a></div></section>
   </main>
-  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a><span class="footer-descriptor">Josh Escobar · Linux infrastructure &amp; network engineering</span><div class="footer-end"><a href="https://github.com/greycarpet" target="_blank" rel="noopener noreferrer">GitHub ↗</a><span>© <span id="year">2026</span> Josh Escobar</span></div></div></footer>
+  <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="../../" aria-label="greycarpet, home">greycarpet</a><span class="footer-descriptor">Josh Escobar · Linux systems &amp; infrastructure engineering</span><div class="footer-end"><a href="https://github.com/greycarpet" target="_blank" rel="noopener noreferrer">GitHub ↗</a><span>© <span id="year">2026</span> Josh Escobar</span></div></div></footer>
 </body>
 </html>

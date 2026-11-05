@@ -80,7 +80,7 @@
   if (resumeTools && !resumeTools.querySelector('[data-resume-download]')) {
     resumeTools.prepend(createDownload());
     const note = resumeTools.querySelector('.resume-note');
-    if (note) note.textContent = 'Download the two-page public resume, or use the browser print option for this page.';
+    if (note) note.textContent = 'Download the updated one-page resume, or print this expanded career profile.';
     const printButton = resumeTools.querySelector('#print-resume');
     if (printButton) printButton.textContent = 'Print this page';
   }
